@@ -211,7 +211,7 @@ footer a{color:var(--cream);text-decoration:none;border-bottom:1px solid rgba(23
 
 <footer>
   <p>Alizée Monnier &mdash; Professeure de Yoga</p>
-  <p style="margin-top:.5rem;opacity:.6;font-size:.8rem">Contact : <a href="mailto:aliyoga2508@gmail.com">aliyoga2508@gmail.com</a></p>
+  <p style="margin-top:.5rem;opacity:.6;font-size:.8rem">Contact : <a href="/cdn-cgi/l/email-protection#cdaca1a4b4a2aaacfff8fdf58daaa0aca4a1e3aea2a0"><span class="__cf_email__" data-cfemail="e6878a8f9f898187d4d3d6dea6818b878f8ac885898b">[email&#160;protected]</span></a></p>
 </footer>
 
 <script>
@@ -222,7 +222,7 @@ const CONFIG = {
   adminPassword: 'alizee2025',          // Mot de passe admin
   ownerEmail: 'aliyoga2508@gmail.com',
   emailjsPublicKey: 'iiD6Oq4uKVfep4ig5',   // ⚠ Remplacer après config EmailJS
-  emailjsServiceId: 'service_ip_alizee',           // ⚠ Remplacer après config EmailJS
+  emailjsServiceId: 'service_Alizeeyoga',           // ⚠ Remplacer après config EmailJS
   emailjsTemplateClient: 'template_confclient', // ⚠ Template confirmation client
   emailjsTemplateOwner: 'template_inscription',   // ⚠ Template notification gérante
 };
@@ -408,35 +408,48 @@ async function submitBooking(sessionId){
   const dateFormatted=dateObj.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
   // EmailJS — envoi des mails
+  const paramsClient = {
+    to_email: email,
+    to_name: `${prenom} ${nom}`,
+    session_type: s.type,
+    session_date: dateFormatted,
+    session_time: s.time,
+    session_lieu: s.lieu,
+    session_gmaps: s.gmaps || '',
+  };
+  const paramsOwner = {
+    to_email: CONFIG.ownerEmail,
+    client_prenom: prenom,
+    client_nom: nom,
+    client_email: email,
+    client_tel: tel,
+    session_type: s.type,
+    session_date: dateFormatted,
+    session_time: s.time,
+    session_lieu: s.lieu,
+    session_gmaps: s.gmaps || '',
+    spots_taken: s.registrations.length,
+    spots_max: s.maxParticipants,
+  };
+
+  console.log('📧 Envoi mail client vers:', email);
+  console.log('📧 Params client:', paramsClient);
+
   try{
-    emailjs.init(CONFIG.emailjsPublicKey);
-
-    // Mail au client
-    await emailjs.send(CONFIG.emailjsServiceId, CONFIG.emailjsTemplateClient, {
-      to_email: email,
-      to_name: `${prenom} ${nom}`,
-      session_type: s.type,
-      session_date: dateFormatted,
-      session_time: s.time,
-      session_lieu: s.lieu,
-    });
-
-    // Mail à la gérante
-    await emailjs.send(CONFIG.emailjsServiceId, CONFIG.emailjsTemplateOwner, {
-      to_email: CONFIG.ownerEmail,
-      client_prenom: prenom,
-      client_nom: nom,
-      client_email: email,
-      client_tel: tel,
-      session_type: s.type,
-      session_date: dateFormatted,
-      session_time: s.time,
-      session_lieu: s.lieu,
-      spots_taken: s.registrations.length,
-      spots_max: s.maxParticipants,
-    });
+    const r1 = await emailjs.send(CONFIG.emailjsServiceId, CONFIG.emailjsTemplateClient, paramsClient);
+    console.log('✅ Mail client envoyé:', r1.status, r1.text);
   }catch(err){
-    console.warn('EmailJS non configuré ou erreur:', err);
+    console.error('❌ Erreur mail client:', err);
+    showToast('Erreur envoi mail client : ' + (err.text || err.message || JSON.stringify(err)), 'error');
+  }
+
+  console.log('📧 Envoi mail gérante vers:', CONFIG.ownerEmail);
+  try{
+    const r2 = await emailjs.send(CONFIG.emailjsServiceId, CONFIG.emailjsTemplateOwner, paramsOwner);
+    console.log('✅ Mail gérante envoyé:', r2.status, r2.text);
+  }catch(err){
+    console.error('❌ Erreur mail gérante:', err);
+    showToast('Erreur envoi mail gérante : ' + (err.text || err.message || JSON.stringify(err)), 'error');
   }
 
   renderCalendar();
@@ -654,6 +667,7 @@ function renderWeek(){
         card.className='week-session-card'+(isFull?' full':'');
         card.innerHTML=`<div class="wsc-type">${s.type}</div>
           <div class="wsc-meta">⏰ ${s.time} &nbsp;·&nbsp; 📍 ${s.lieu} &nbsp;·&nbsp; ${s.registrations.length}/${s.maxParticipants} inscrits${isFull?' · <strong>Complet</strong>':''}</div>`;
+        if(!isFull) card.oncl
         if(!isFull) card.onclick=()=>openBooking(s.id);
         sessionsDiv.appendChild(card);
       });
@@ -664,6 +678,7 @@ function renderWeek(){
 }
 
 /* ════ INIT ════ */
+emailjs.init(CONFIG.emailjsPublicKey);
 renderCalendar();
 renderWeek();
 </script>
