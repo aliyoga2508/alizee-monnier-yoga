@@ -211,16 +211,16 @@ footer a{color:var(--cream);text-decoration:none;border-bottom:1px solid rgba(23
 
 <footer>
   <p>Alizée Monnier &mdash; Professeure de Yoga</p>
-  <p style="margin-top:.5rem;opacity:.6;font-size:.8rem">Contact : <a href="/cdn-cgi/l/email-protection#19787570637c7c3774767777707c6b2b2c2921597e74787075377a7674"><span class="__cf_email__" data-cfemail="98f9f4f1e2fdfdb6f5f7f6f6f1fdeaaaada8a0d8fff5f9f1f4b6fbf7f5">[email&#160;protected]</span></a></p>
+  <p style="margin-top:.5rem;opacity:.6;font-size:.8rem">Contact : <a href="mailto:aliyoga2508@gmail.com">aliyoga2508@gmail.com</a></p>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 /* ════════════════════════════════
    CONFIG — à personnaliser
 ═══════════════════════════════════ */
 const CONFIG = {
   adminPassword: 'alizee2025',          // Mot de passe admin
-  ownerEmail: 'alizee.monnier2508@gmail.com',
+  ownerEmail: 'aliyoga2508@gmail.com',
   emailjsPublicKey: 'iiD6Oq4uKVfep4ig5',   // ⚠ Remplacer après config EmailJS
   emailjsServiceId: 'service_ip_alizee',           // ⚠ Remplacer après config EmailJS
   emailjsTemplateClient: 'template_confclient', // ⚠ Template confirmation client
@@ -508,11 +508,7 @@ function renderAdminPanel(panel){
       <h4>Ajouter une session</h4>
       <div class="form-row">
         <div class="form-group"><label>Type de séance</label>
-          <input type="text" id="a-type" placeholder="Hatha Yoga, Méditation…" list="types-list"/>
-          <datalist id="types-list">
-            <option value="Hatha Yoga"/><option value="Yoga Asana"/><option value="Méditation"/>
-            <option value="Pranayama"/><option value="Chants & Mantras"/>
-          </datalist>
+          <input type="text" id="a-type" placeholder="Ex : Hatha Yoga, Méditation, Pranayama…"/>
         </div>
         <div class="form-group"><label>Nombre max de participants</label>
           <input type="number" id="a-max" min="1" max="50" value="10"/>
