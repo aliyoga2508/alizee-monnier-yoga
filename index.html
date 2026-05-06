@@ -38,14 +38,14 @@ header{background:var(--burgundy);padding:1.2rem 2rem;display:flex;align-items:c
 .meteo-inner p{background:rgba(143,67,51,.08);border-left:4px solid var(--burgundy);border-radius:0 8px 8px 0;padding:.75rem 1.1rem;font-size:.88rem;color:var(--grey);line-height:1.7;margin:0}
 
 /* CALENDAR */
-.cal-section{padding:2rem;max-width:1100px;margin:0 auto}
+.cal-section{padding:2rem;max-width:1100px;margin:0 auto;width:100%}
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
 .cal-nav h2{font-size:1.6rem;font-weight:300;font-style:italic;color:var(--burgundy);text-transform:capitalize}
 .nav-arrow{background:none;border:1.5px solid var(--burgundy);color:var(--burgundy);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .nav-arrow:hover{background:var(--burgundy);color:var(--cream)}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;background:var(--cream-dark);border-radius:12px;overflow:hidden}
 .cal-day-header{background:var(--burgundy);color:var(--cream);text-align:center;padding:.5rem;font-size:.75rem;letter-spacing:.1em}
-.cal-day{background:var(--cream);min-height:90px;padding:.4rem;position:relative}
+.cal-day{background:var(--cream);min-height:100px;padding:.4rem;position:relative}
 .cal-day.empty{background:#e8dac6;opacity:.5}
 .cal-day.today{background:#f5ede0}
 .cal-day.today::after{content:'';position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--burgundy);border-radius:50%}
@@ -146,7 +146,7 @@ header{background:var(--burgundy);padding:1.2rem 2rem;display:flex;align-items:c
 .toast.error{background:var(--burgundy)}
 
 /* FOOTER */
-footer{background:var(--grey);color:var(--cream);text-align:center;padding:2rem;margin-top:3rem;font-size:.85rem;opacity:.9}
+footer{background:var(--grey);color:var(--cream);text-align:center;padding:2rem;margin-top:3rem;font-size:.85rem;opacity:.9;clear:both}
 footer a{color:var(--cream);text-decoration:none;border-bottom:1px solid rgba(235,225,208,.3)}
 
 /* MOBILE */
@@ -280,7 +280,11 @@ function initFirebaseListener() {
   sessionsRef.on('value', function(snapshot) {
     var data = snapshot.val();
     if (data) {
-      sessions = Object.values(data).sort(function(a,b){
+      sessions = Object.values(data).map(function(s){
+        if(!s.registrations) s.registrations = [];
+        if(!Array.isArray(s.registrations)) s.registrations = Object.values(s.registrations);
+        return s;
+      }).sort(function(a,b){
         return a.date.localeCompare(b.date) || a.time.localeCompare(b.time);
       });
     } else {
@@ -467,7 +471,7 @@ function renderAdminContent() {
       +'<div class="login-form">'
       +'<svg viewBox="0 0 80 80" width="60" height="60" style="margin:0 auto 1rem;display:block"><circle cx="40" cy="40" r="38" fill="none" stroke="#8f4333" stroke-width="3"/><text x="40" y="52" text-anchor="middle" font-family="Fraunces,serif" font-size="28" fill="#8f4333" font-style="italic">AM</text></svg>'
       +'<h3>Espace réservé</h3>'
-      +'<div class="form-group" style="text-align:left"><label>Mot de passe</label><input type="password" id="admin-pw" placeholder="••••••••" onkeydown="handleAdminKeydown(event)"/></div>'
+      +'<div class="form-group" style="text-align:left"><label>Mot de passe</label><input type="password" id="admin-pw" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" onkeydown="handleAdminKeydown(event)"/></div>'
       +'<button class="btn-primary" onclick="checkAdminLogin()">Connexion</button>'
       +'<div class="login-err" id="login-err"></div>'
       +'</div>';
