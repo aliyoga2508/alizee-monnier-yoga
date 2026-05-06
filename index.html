@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Alizée Monnier · Yoga</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -107,6 +106,19 @@ nav a:hover{opacity:1}
 .session-list-item:last-child{border-bottom:none}
 .del-btn{background:none;border:none;color:var(--burgundy);cursor:pointer;font-size:.9rem;opacity:.6;transition:opacity .2s}
 .del-btn:hover{opacity:1}
+.edit-btn{background:none;border:none;color:var(--green);cursor:pointer;font-size:.85rem;opacity:.7;transition:opacity .2s;font-family:var(--font);padding:0 6px}
+.edit-btn:hover{opacity:1}
+.session-actions{display:flex;align-items:center;gap:4px}
+.recur-toggle{display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem;font-size:.85rem;color:var(--grey)}
+.recur-toggle input[type=checkbox]{accent-color:var(--green);width:16px;height:16px;cursor:pointer}
+.recur-options{background:rgba(104,114,87,.08);border-radius:8px;padding:.8rem;margin-bottom:.8rem;border:1px solid rgba(104,114,87,.2)}
+.recur-options label{font-size:.78rem;color:var(--grey);letter-spacing:.04em}
+.day-checkbox{display:inline-flex;align-items:center;gap:4px;margin:4px 6px 4px 0;font-size:.8rem}
+.day-checkbox input{accent-color:var(--green)}
+.edit-modal{position:fixed;inset:0;background:rgba(56,56,55,.65);z-index:400;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s}
+.edit-modal.active{opacity:1;pointer-events:all}
+.edit-panel{background:var(--cream);border-radius:16px;max-width:520px;width:100%;padding:2rem;position:relative;max-height:90vh;overflow-y:auto}
+.edit-panel h3{font-size:1.3rem;font-weight:300;font-style:italic;color:var(--burgundy);margin-bottom:1.2rem}
 .login-form{max-width:340px;margin:0 auto;text-align:center}
 .login-form h3{font-style:italic;color:var(--burgundy);margin-bottom:1.5rem;font-weight:300;font-size:1.4rem}
 .login-err{color:var(--burgundy);font-size:.85rem;margin-top:.5rem;min-height:1.2em}
@@ -149,6 +161,10 @@ footer a{color:var(--cream);text-decoration:none;border-bottom:1px solid rgba(23
   .modal{padding:1.2rem}
 }
 </style>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 
@@ -177,6 +193,14 @@ footer a{color:var(--cream);text-decoration:none;border-bottom:1px solid rgba(23
 </div>
 
 <!-- CALENDAR -->
+<div style="background:#f5ede0;padding:.8rem 2rem;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <p style="background:rgba(143,67,51,.08);border-left:4px solid var(--burgundy);border-radius:0 8px 8px 0;padding:.75rem 1.1rem;font-family:var(--font);font-size:.88rem;color:var(--grey);line-height:1.7;margin:0;">
+      ☁️ <strong>Conditions météo</strong> — Certaines séances se déroulant en extérieur, elles peuvent être annulées ou déplacées en cas de météo défavorable. Tu seras prévenu(e) par e-mail dans les meilleurs délais. Merci de ta compréhension 🙏
+    </p>
+  </div>
+</div>
+
 <section class="cal-section">
   <div class="cal-nav">
     <button class="nav-arrow" onclick="changeMonth(-1)">&#8249;</button>
@@ -202,6 +226,26 @@ footer a{color:var(--cream);text-decoration:none;border-bottom:1px solid rgba(23
   </div>
 </div>
 
+<!-- EDIT SESSION MODAL -->
+<div class="edit-modal" id="edit-modal" onclick="closeEditModal(event)">
+  <div class="edit-panel">
+    <button class="modal-close" onclick="closeEditModalDirect()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#383837;opacity:.5">&#215;</button>
+    <h3>✏️ Modifier la session</h3>
+    <div class="form-row">
+      <div class="form-group"><label>Type de séance</label><input type="text" id="e-type"/></div>
+      <div class="form-group"><label>Participants max</label><input type="number" id="e-max" min="1" max="50"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Date</label><input type="date" id="e-date"/></div>
+      <div class="form-group"><label>Heure de début</label><input type="time" id="e-time"/></div>
+      <div class="form-group"><label>Heure de fin</label><input type="time" id="e-time-end"/></div>
+    </div>
+    <div class="form-group"><label>Lieu</label><input type="text" id="e-lieu"/></div>
+    <div class="form-group"><label>Lien Google Maps (optionnel)</label><input type="url" id="e-gmaps"/></div>
+    <button class="btn-primary" onclick="saveEditSession()">Enregistrer les modifications</button>
+  </div>
+</div>
+
 <!-- ADMIN OVERLAY -->
 <div class="admin-overlay" id="admin-overlay" onclick="closeAdmin(event)">
   <div class="admin-panel" id="admin-panel">
@@ -211,7 +255,14 @@ footer a{color:var(--cream);text-decoration:none;border-bottom:1px solid rgba(23
 
 <footer>
   <p>Alizée Monnier &mdash; Professeure de Yoga</p>
-  <p style="margin-top:.5rem;opacity:.6;font-size:.8rem">Contact : <a href="/cdn-cgi/l/email-protection#cdaca1a4b4a2aaacfff8fdf58daaa0aca4a1e3aea2a0"><span class="__cf_email__" data-cfemail="e6878a8f9f898187d4d3d6dea6818b878f8ac885898b">[email&#160;protected]</span></a></p>
+  <p style="margin-top:.5rem;opacity:.6;font-size:.8rem">Contact : <a id="contact-link" href="#">aliyoga2508&#64;gmail.com</a></p>
+  <script>
+    (function(){
+      var a=document.getElementById('contact-link');
+      var e='aliyoga2508'+'@'+'gmail.com';
+      a.href='mailto:'+e;
+    })();
+  </script>
 </footer>
 
 <script>
@@ -219,67 +270,54 @@ footer a{color:var(--cream);text-decoration:none;border-bottom:1px solid rgba(23
    CONFIG — à personnaliser
 ═══════════════════════════════════ */
 const CONFIG = {
-  adminPassword: 'Plume3110',          // Mot de passe admin
+  adminPassword: 'alizee2025',
   ownerEmail: 'aliyoga2508@gmail.com',
-  emailjsPublicKey: 'iiD6Oq4uKVfep4ig5',   // ⚠ Remplacer après config EmailJS
-  emailjsServiceId: 'service_Alizeeyoga',           // ⚠ Remplacer après config EmailJS
-  emailjsTemplateClient: 'template_confclient', // ⚠ Template confirmation client
-  emailjsTemplateOwner: 'template_inscription',   // ⚠ Template notification gérante
+  emailjsPublicKey: 'iiD6Oq4uKVfep4ig5',
+  emailjsServiceId: 'service_Alizeeyoga',
+  emailjsTemplateClient: 'template_confclient',
+  emailjsTemplateOwner: 'template_inscription',
 };
+
+/* ════════════════════════════════
+   FIREBASE
+═══════════════════════════════════ */
+const firebaseConfig = {
+  apiKey: "AIzaSyAAz_-aMvwHkjMCi2yjG0BPlm6zscfu1Bw",
+  authDomain: "aliyoga-1beb4.firebaseapp.com",
+  databaseURL: "https://aliyoga-1beb4-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "aliyoga-1beb4",
+  storageBucket: "aliyoga-1beb4.firebasestorage.app",
+  messagingSenderId: "110494249497",
+  appId: "1:110494249497:web:8a52951b270e7bfdc1b088"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const sessionsRef = db.ref('sessions');
 
 /* ════════════════════════════════
    ÉTAT & DONNÉES
 ═══════════════════════════════════ */
 let currentDate = new Date();
 let adminLoggedIn = false;
+let sessions = [];
 
-// Données demo — sessions exemple
-let sessions = JSON.parse(localStorage.getItem('am_sessions') || 'null') || [
-  {
-    id: 's1',
-    date: formatDate(new Date()),
-    time: '09:00',
-    lieu: 'Studio La Confluence, Lyon 2',
-    maxParticipants: 10,
-    registrations: [
-      {nom:'Dupont',prenom:'Marie',email:'marie@exemple.fr',tel:'0601020304'}
-    ],
-    type: 'Hatha Yoga',
-    gmaps: 'https://maps.google.com/?q=Studio+La+Confluence+Lyon'
-  },
-  {
-    id: 's2',
-    date: formatDate(addDays(new Date(), 3)),
-    time: '18:30',
-    lieu: 'Parc de la Tête d\'Or, Lyon 6',
-    maxParticipants: 8,
-    registrations: [],
-    type: 'Méditation & Pranayama',
-    gmaps: 'https://maps.google.com/?q=Parc+de+la+Tete+Or+Lyon'
-  },
-  {
-    id: 's3',
-    date: formatDate(addDays(new Date(), 7)),
-    time: '10:00',
-    lieu: 'Studio La Confluence, Lyon 2',
-    maxParticipants: 12,
-    registrations: Array(12).fill({nom:'X',prenom:'X',email:'x@x.fr',tel:'0000000000'}),
-    type: 'Chants & Mantras',
-    gmaps: 'https://maps.google.com/?q=Studio+La+Confluence+Lyon'
-  },
-  {
-    id: 's4',
-    date: formatDate(addDays(new Date(), 10)),
-    time: '07:30',
-    lieu: 'Parc Blandan, Lyon 7',
-    maxParticipants: 15,
-    registrations: Array(5).fill({nom:'X',prenom:'X',email:'x@x.fr',tel:'0000000000'}),
-    type: 'Yoga Asana',
-    gmaps: 'https://maps.google.com/?q=Parc+Blandan+Lyon'
-  }
-];
+function saveSessions(){
+  const obj = {};
+  sessions.forEach(s => { obj[s.id] = s; });
+  sessionsRef.set(obj);
+}
 
-function saveSessions(){localStorage.setItem('am_sessions', JSON.stringify(sessions))}
+function initFirebaseListener(){
+  sessionsRef.on('value', snapshot => {
+    const data = snapshot.val();
+    sessions = data ? Object.values(data).sort((a,b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time)) : [];
+    renderCalendar();
+    renderWeek();
+    if(adminLoggedIn && document.getElementById('admin-overlay').classList.contains('active')){
+      renderAdminPanel(document.getElementById('admin-content'));
+    }
+  });
+}
 
 /* ════════════════════════════════
    UTILITAIRES DATE
@@ -332,7 +370,7 @@ function renderCalendar(){
       const chip=document.createElement('div');
       const isFull=s.registrations.length>=s.maxParticipants;
       chip.className='session-chip'+(isFull?' full':'');
-      chip.innerHTML=`<span class="chip-time">${s.time} · ${s.type}</span><span class="chip-spots">${s.registrations.length}/${s.maxParticipants}</span>`;
+      chip.innerHTML=`<span class="chip-time">${s.time}${s.timeEnd?'–'+s.timeEnd:''} · ${s.type}</span><span class="chip-spots">${s.registrations.length}/${s.maxParticipants}</span>`;
       if(!isFull) chip.onclick=()=>openBooking(s.id);
       else chip.title='Complet';
       cell.appendChild(chip);
@@ -365,7 +403,7 @@ function renderBookingModal(s){
     <h3>${s.type}</h3>
     <div class="modal-meta">
       <span class="meta-tag">📅 ${dateFormatted}</span>
-      <span class="meta-tag">⏰ ${s.time}</span>
+      <span class="meta-tag">⏰ ${s.time}${s.timeEnd ? " – "+s.timeEnd : ""}</span>
       <span class="meta-tag">📍 ${s.lieu}</span>
       ${s.gmaps ? `<a class="meta-tag gmaps-link" href="${s.gmaps}" target="_blank" rel="noopener">🗺 Voir sur Google Maps</a>` : ''}
     </div>
@@ -413,7 +451,7 @@ async function submitBooking(sessionId){
     to_name: `${prenom} ${nom}`,
     session_type: s.type,
     session_date: dateFormatted,
-    session_time: s.time,
+    session_time: s.time + (s.timeEnd ? ' – ' + s.timeEnd : ''),
     session_lieu: s.lieu,
     session_gmaps: s.gmaps || '',
   };
@@ -425,15 +463,12 @@ async function submitBooking(sessionId){
     client_tel: tel,
     session_type: s.type,
     session_date: dateFormatted,
-    session_time: s.time,
+    session_time: s.time + (s.timeEnd ? ' – ' + s.timeEnd : ''),
     session_lieu: s.lieu,
     session_gmaps: s.gmaps || '',
     spots_taken: s.registrations.length,
     spots_max: s.maxParticipants,
   };
-
-  console.log('📧 Envoi mail client vers:', email);
-  console.log('📧 Params client:', paramsClient);
 
   try{
     const r1 = await emailjs.send(CONFIG.emailjsServiceId, CONFIG.emailjsTemplateClient, paramsClient);
@@ -443,7 +478,6 @@ async function submitBooking(sessionId){
     showToast('Erreur envoi mail client : ' + (err.text || err.message || JSON.stringify(err)), 'error');
   }
 
-  console.log('📧 Envoi mail gérante vers:', CONFIG.ownerEmail);
   try{
     const r2 = await emailjs.send(CONFIG.emailjsServiceId, CONFIG.emailjsTemplateOwner, paramsOwner);
     console.log('✅ Mail gérante envoyé:', r2.status, r2.text);
@@ -460,7 +494,7 @@ async function submitBooking(sessionId){
       <h3>Inscription confirmée !</h3>
       <p>Bonjour <strong>${prenom}</strong>, votre inscription est bien enregistrée.<br/><br/>
       <strong>${s.type}</strong><br/>
-      ${dateFormatted} à ${s.time}<br/>
+      ${dateFormatted} à ${s.time}${s.timeEnd?' – '+s.timeEnd:''}<br/>
       ${s.lieu}<br/><br/>
       Un e-mail de confirmation vous a été envoyé à <strong>${email}</strong>.</p>
       <button class="btn-primary" style="margin-top:1.5rem" onclick="closeBookingDirect()">Fermer</button>
@@ -513,9 +547,7 @@ function renderAdminPanel(panel){
     <button class="modal-close" onclick="closeAdminDirect();adminLoggedIn=false;" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#383837;opacity:.5">&#215;</button>
     <h2>🌿 Espace admin</h2>
     
-    <div class="emailjs-note">
-      ⚙️ <strong>Configuration EmailJS requise</strong> : pour activer les e-mails automatiques, renseignez vos clés EmailJS dans la variable CONFIG en haut du code source (emailjsPublicKey, emailjsServiceId, etc.). Rendez-vous sur <a href="https://www.emailjs.com" target="_blank">emailjs.com</a> pour créer vos templates.
-    </div>
+
 
     <div class="admin-section">
       <h4>Ajouter une session</h4>
@@ -529,13 +561,26 @@ function renderAdminPanel(panel){
       </div>
       <div class="form-row">
         <div class="form-group"><label>Date</label><input type="date" id="a-date"/></div>
-        <div class="form-group"><label>Heure</label><input type="time" id="a-time" value="09:00"/></div>
+        <div class="form-group"><label>Heure de début</label><input type="time" id="a-time" value="09:00"/></div>
+        <div class="form-group"><label>Heure de fin</label><input type="time" id="a-time-end" value="10:00"/></div>
       </div>
       <div class="form-group"><label>Lieu</label>
         <input type="text" id="a-lieu" placeholder="Studio La Confluence, Lyon 2"/>
       </div>
       <div class="form-group"><label>Lien Google Maps (optionnel)</label>
         <input type="url" id="a-gmaps" placeholder="https://maps.google.com/?q=..."/>
+      </div>
+      <!-- RÉCURRENCE -->
+      <div class="recur-toggle">
+        <input type="checkbox" id="a-recur" onchange="toggleRecur()"/>
+        <label for="a-recur">🔁 Session récurrente (répéter chaque semaine)</label>
+      </div>
+      <div class="recur-options" id="recur-options" style="display:none">
+        <label style="display:block;margin-bottom:.5rem;font-weight:600;color:var(--green)">Jours de répétition</label>
+        <div id="recur-days-container"></div>
+        <div class="form-row" style="margin-top:.8rem">
+          <div class="form-group"><label>Répéter jusqu'au</label><input type="date" id="a-recur-end"/></div>
+        </div>
       </div>
       <button class="btn-primary" onclick="addSession()">Ajouter la session</button>
     </div>
@@ -547,10 +592,13 @@ function renderAdminPanel(panel){
         <div class="session-list-item">
           <div>
             <div style="font-weight:600;color:var(--burgundy)">${s.type}</div>
-            <div style="opacity:.65;font-size:.8rem">${parseDate(s.date).toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})} à ${s.time} · ${s.lieu}</div>
+            <div style="opacity:.65;font-size:.8rem">${parseDate(s.date).toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})} à ${s.time}${s.timeEnd?' – '+s.timeEnd:''} · ${s.lieu}</div>
             <div style="font-size:.78rem;color:var(--green);margin-top:2px">${s.registrations.length}/${s.maxParticipants} inscrits</div>
           </div>
-          <button class="del-btn" onclick="deleteSession('${s.id}')" title="Supprimer">&#215;</button>
+          <div class="session-actions">
+            <button class="edit-btn" onclick="openEditSession('${s.id}')" title="Modifier">✏️</button>
+            <button class="del-btn" onclick="deleteSession('${s.id}')" title="Supprimer">&#215;</button>
+          </div>
         </div>
         ${s.registrations.filter(r=>r.email!=='x@x.fr').map(r=>`
           <div style="padding:.3rem 0 .3rem 1rem;font-size:.75rem;opacity:.6;border-bottom:1px dotted var(--cream-dark)">
@@ -569,29 +617,110 @@ function addSession(){
   const type=document.getElementById('a-type').value.trim();
   const date=document.getElementById('a-date').value;
   const time=document.getElementById('a-time').value;
+  const timeEnd=document.getElementById('a-time-end').value;
   const lieu=document.getElementById('a-lieu').value.trim();
   const gmaps=document.getElementById('a-gmaps').value.trim();
   const max=parseInt(document.getElementById('a-max').value)||10;
 
   if(!type||!date||!time||!lieu){showToast('Merci de remplir tous les champs','error');return;}
 
-  const s={id:'s'+Date.now(),date,time,lieu,gmaps,maxParticipants:max,registrations:[],type};
-  sessions.push(s);
-  saveSessions();
-  renderCalendar();
-  renderWeek();
-  renderAdminPanel(document.getElementById('admin-content'));
-  showToast('Session ajoutée avec succès !');
+  const isRecur=document.getElementById('a-recur').checked;
+
+  if(!isRecur){
+    // Session unique
+    if(!date){showToast('Merci de renseigner une date','error');return;}
+    const s={id:'s'+Date.now(),date,time,timeEnd,lieu,gmaps,maxParticipants:max,registrations:[],type};
+    sessions.push(s);
+    saveSessions();
+    showToast('Session ajoutée avec succès !');
+  } else {
+    // Sessions récurrentes
+    const selectedDays=[...document.querySelectorAll('.recur-day:checked')].map(c=>parseInt(c.value));
+    const recurEnd=document.getElementById('a-recur-end').value;
+    if(selectedDays.length===0){showToast('Sélectionnez au moins un jour','error');return;}
+    if(!recurEnd){showToast('Indiquez une date de fin','error');return;}
+    const endDate=new Date(recurEnd);
+    let current=new Date();
+    current.setHours(0,0,0,0);
+    let count=0;
+    while(current<=endDate && count<100){
+      const dow=(current.getDay()+6)%7; // lundi=0
+      if(selectedDays.includes(dow)){
+        const s={id:'s'+Date.now()+'_'+count,date:formatDate(current),time,timeEnd,lieu,gmaps,maxParticipants:max,registrations:[],type};
+        sessions.push(s);
+        count++;
+      }
+      current.setDate(current.getDate()+1);
+    }
+    saveSessions();
+    // Reset récurrence
+    document.getElementById('a-recur').checked=false;
+    toggleRecur();
+    showToast(`${count} session${count>1?'s':''} récurrente${count>1?'s':''} ajoutée${count>1?'s':''} !`);
+  }
 }
 
 function deleteSession(id){
   if(!confirm('Supprimer cette session ?'))return;
   sessions=sessions.filter(s=>s.id!==id);
   saveSessions();
-  renderCalendar();
-  renderWeek();
-  renderAdminPanel(document.getElementById('admin-content'));
   showToast('Session supprimée');
+}
+
+/* ── MODIFICATION SESSION ── */
+let editingSessionId = null;
+
+function openEditSession(id){
+  const s = sessions.find(x=>x.id===id);
+  if(!s) return;
+  editingSessionId = id;
+  document.getElementById('e-type').value = s.type || '';
+  document.getElementById('e-max').value = s.maxParticipants || 10;
+  document.getElementById('e-date').value = s.date || '';
+  document.getElementById('e-time').value = s.time || '';
+  document.getElementById('e-time-end').value = s.timeEnd || '';
+  document.getElementById('e-lieu').value = s.lieu || '';
+  document.getElementById('e-gmaps').value = s.gmaps || '';
+  document.getElementById('edit-modal').classList.add('active');
+}
+
+function closeEditModal(e){ if(e.target===document.getElementById('edit-modal')) closeEditModalDirect(); }
+function closeEditModalDirect(){ document.getElementById('edit-modal').classList.remove('active'); editingSessionId=null; }
+
+function saveEditSession(){
+  if(!editingSessionId) return;
+  const type=document.getElementById('e-type').value.trim();
+  const max=parseInt(document.getElementById('e-max').value)||10;
+  const date=document.getElementById('e-date').value;
+  const time=document.getElementById('e-time').value;
+  const timeEnd=document.getElementById('e-time-end').value;
+  const lieu=document.getElementById('e-lieu').value.trim();
+  const gmaps=document.getElementById('e-gmaps').value.trim();
+  if(!type||!date||!time||!lieu){showToast('Merci de remplir tous les champs','error');return;}
+  const idx=sessions.findIndex(s=>s.id===editingSessionId);
+  if(idx===-1) return;
+  sessions[idx]={...sessions[idx], type, maxParticipants:max, date, time, timeEnd, lieu, gmaps};
+  saveSessions();
+  closeEditModalDirect();
+  showToast('Session modifiée avec succès !');
+}
+
+/* ── RÉCURRENCE ── */
+function toggleRecur(){
+  const checked=document.getElementById('a-recur').checked;
+  document.getElementById('recur-options').style.display=checked?'block':'none';
+  const dateInput=document.getElementById('a-date');
+  const dateLabel=dateInput?dateInput.previousElementSibling:null;
+  if(dateInput) dateInput.style.opacity=checked?'.3':'1';
+  if(dateLabel) dateLabel.style.opacity=checked?'.3':'1';
+  // Injecter les cases à cocher jours si pas encore fait
+  const container=document.getElementById('recur-days-container');
+  if(container && container.innerHTML===''){
+    const jours=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+    container.innerHTML=jours.map((d,i)=>
+      '<label class="day-checkbox"><input type="checkbox" class="recur-day" value="'+i+'"/> '+d+'</label>'
+    ).join('');
+  }
 }
 
 /* ════════════════════════════════
@@ -666,7 +795,7 @@ function renderWeek(){
         const card=document.createElement('div');
         card.className='week-session-card'+(isFull?' full':'');
         card.innerHTML=`<div class="wsc-type">${s.type}</div>
-          <div class="wsc-meta">⏰ ${s.time} &nbsp;·&nbsp; 📍 ${s.lieu} &nbsp;·&nbsp; ${s.registrations.length}/${s.maxParticipants} inscrits${isFull?' · <strong>Complet</strong>':''}</div>`;
+          <div class="wsc-meta">⏰ ${s.time}${s.timeEnd?" – "+s.timeEnd:""} &nbsp;·&nbsp; 📍 ${s.lieu} &nbsp;·&nbsp; ${s.registrations.length}/${s.maxParticipants} inscrits${isFull?' · <strong>Complet</strong>':''}</div>`;
         if(!isFull) card.oncl
         if(!isFull) card.onclick=()=>openBooking(s.id);
         sessionsDiv.appendChild(card);
@@ -678,9 +807,12 @@ function renderWeek(){
 }
 
 /* ════ INIT ════ */
-emailjs.init(CONFIG.emailjsPublicKey);
-renderCalendar();
-renderWeek();
+emailjs.init({
+  publicKey: CONFIG.emailjsPublicKey,
+  blockHeadless: false,
+  limitRate: { throttle: 2000 }
+});
+initFirebaseListener();
 </script>
 </body>
 </html>
