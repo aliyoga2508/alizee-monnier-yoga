@@ -251,7 +251,6 @@ const CONFIG = {
   emailjsPublicKey: 'iiD6Oq4uKVfep4ig5',
   emailjsServiceId: 'service_Alizeeyoga',
   emailjsTemplateClient: 'template_confclient',
-  emailjsTemplateOwner: 'template_inscription',
   emailjsTemplateAnnulation: 'template_annulation',
 };
 
@@ -424,7 +423,7 @@ function openBooking(id) {
     html+='<div class="form-row"><div class="form-group"><label>Prénom *</label><input type="text" id="f-prenom" placeholder="Marie"/></div><div class="form-group"><label>Nom *</label><input type="text" id="f-nom" placeholder="Dupont"/></div></div>';
     html+='<div class="form-group"><label>Adresse e-mail *</label><input type="email" id="f-email" placeholder="marie@exemple.fr"/></div>';
     html+='<div class="form-group"><label>Téléphone *</label><input type="tel" id="f-tel" placeholder="06 00 00 00 00"/></div>';
-    html+='<button class="btn-primary" id="submit-btn" class=\"submit-action\" data-id=\"'+id+'\"">Confirmer mon inscription</button>';
+    html+='<button class="btn-primary submit-action" id="submit-btn" data-id="'+id+'">Confirmer mon inscription</button>';
   }
   document.getElementById('modal-content').innerHTML=html;
   document.getElementById('booking-overlay').classList.add('active');
@@ -450,7 +449,7 @@ async function submitBooking(id) {
   var timeStr=s.time+(s.timeEnd?' – '+s.timeEnd:'');
   try {
     await emailjs.send(CONFIG.emailjsServiceId,CONFIG.emailjsTemplateClient,{to_email:email,to_name:prenom+' '+nom,session_type:s.type,session_date:dateFormatted,session_time:timeStr,session_lieu:s.lieu,session_gmaps:s.gmaps||''});
-    await emailjs.send(CONFIG.emailjsServiceId,CONFIG.emailjsTemplateOwner,{to_email:CONFIG.ownerEmail,client_prenom:prenom,client_nom:nom,client_email:email,client_tel:tel,session_type:s.type,session_date:dateFormatted,session_time:timeStr,session_lieu:s.lieu,session_gmaps:s.gmaps||'',spots_taken:s.registrations.length,spots_max:s.maxParticipants});
+    await emailjs.send(CONFIG.emailjsServiceId,CONFIG.emailjsTemplateClient,{to_email:CONFIG.ownerEmail,to_name:'Alizée',session_type:'🎉 Nouvelle inscription · '+s.type+' ('+s.registrations.length+'/'+s.maxParticipants+')',session_date:dateFormatted+' à '+timeStr,session_time:'👤 '+prenom+' '+nom,session_lieu:'📧 '+email+' · 📞 '+tel,session_gmaps:s.gmaps||''});
   } catch(err){console.error('EmailJS:',err);}
   document.getElementById('modal-content').innerHTML='<div class="success-state"><div class="success-icon">🙏</div><h3>Inscription confirmée !</h3><p>Bonjour <strong>'+prenom+'</strong>, ton inscription est bien enregistrée.<br/><br/><strong>'+s.type+'</strong><br/>'+dateFormatted+' à '+timeStr+'<br/>'+s.lieu+'<br/><br/>Un e-mail de confirmation t\'a \u00e9t\u00e9 envoy\u00e9 \u00e0 <strong>'+email+'</strong>.</p><button class="btn-primary" style="margin-top:1.5rem" onclick="closeBookingDirect()">Fermer</button></div>';
 }
