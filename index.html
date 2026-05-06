@@ -244,7 +244,7 @@ footer a{color:var(--cream);text-decoration:none;border-bottom:1px solid rgba(23
 </footer>
 
 <script>
-/* ════ CONFIG ════ */
+
 const CONFIG = {
   adminPassword: 'Plume3110',
   ownerEmail: 'aliyoga2508@gmail.com',
@@ -255,7 +255,7 @@ const CONFIG = {
   emailjsTemplateAnnulation: 'template_annulation',
 };
 
-/* ════ FIREBASE ════ */
+
 firebase.initializeApp({
   apiKey: "AIzaSyAAz_-aMvwHkjMCi2yjG0BPlm6zscfu1Bw",
   authDomain: "aliyoga-1beb4.firebaseapp.com",
@@ -268,14 +268,14 @@ firebase.initializeApp({
 const db = firebase.database();
 const sessionsRef = db.ref('sessions');
 
-/* ════ STATE ════ */
+
 let sessions = [];
 let currentDate = new Date();
 let weekStart = getMonday(new Date());
 let adminLoggedIn = false;
 let editingSessionId = null;
 
-/* ════ FIREBASE LISTENER ════ */
+
 function initFirebaseListener() {
   sessionsRef.on('value', function(snapshot) {
     var data = snapshot.val();
@@ -301,7 +301,7 @@ function saveSessions() {
   sessionsRef.set(obj);
 }
 
-/* ════ UTILS DATE ════ */
+
 var FR_MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 var FR_DAYS = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
 
@@ -315,7 +315,7 @@ function getMonday(d) {
   return new Date(d.getFullYear(),d.getMonth(),diff);
 }
 
-/* ════ CALENDRIER MOIS ════ */
+
 function changeMonth(dir) {
   currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth()+dir, 1);
   renderCalendar();
@@ -358,7 +358,7 @@ function renderCalendar() {
   }
 }
 
-/* ════ VUE SEMAINE MOBILE ════ */
+
 function changeWeek(dir) { weekStart=addDays(weekStart,dir*7); renderWeek(); }
 
 function renderWeek() {
@@ -400,7 +400,7 @@ function renderWeek() {
   }
 }
 
-/* ════ BOOKING MODAL ════ */
+
 function openBooking(id) {
   var s=sessions.find(function(x){return x.id===id;});
   if(!s)return;
@@ -420,10 +420,11 @@ function openBooking(id) {
     html+='<div class="form-row"><div class="form-group"><label>Prénom *</label><input type="text" id="f-prenom" placeholder="Marie"/></div><div class="form-group"><label>Nom *</label><input type="text" id="f-nom" placeholder="Dupont"/></div></div>';
     html+='<div class="form-group"><label>Adresse e-mail *</label><input type="email" id="f-email" placeholder="marie@exemple.fr"/></div>';
     html+='<div class="form-group"><label>Téléphone *</label><input type="tel" id="f-tel" placeholder="06 00 00 00 00"/></div>';
-    html+='<button class="btn-primary" id="submit-btn" onclick="submitBooking(''+id+'')">Confirmer mon inscription</button>';
+    html+='<button class="btn-primary" id="submit-btn" class=\"submit-action\" data-id=\"'+id+'\"">Confirmer mon inscription</button>';
   }
   document.getElementById('modal-content').innerHTML=html;
   document.getElementById('booking-overlay').classList.add('active');
+  setupBookingDelegation();
 }
 function closeBooking(e){if(e.target===document.getElementById('booking-overlay'))closeBookingDirect();}
 function closeBookingDirect(){document.getElementById('booking-overlay').classList.remove('active');}
@@ -447,10 +448,10 @@ async function submitBooking(id) {
     await emailjs.send(CONFIG.emailjsServiceId,CONFIG.emailjsTemplateClient,{to_email:email,to_name:prenom+' '+nom,session_type:s.type,session_date:dateFormatted,session_time:timeStr,session_lieu:s.lieu,session_gmaps:s.gmaps||''});
     await emailjs.send(CONFIG.emailjsServiceId,CONFIG.emailjsTemplateOwner,{to_email:CONFIG.ownerEmail,client_prenom:prenom,client_nom:nom,client_email:email,client_tel:tel,session_type:s.type,session_date:dateFormatted,session_time:timeStr,session_lieu:s.lieu,session_gmaps:s.gmaps||'',spots_taken:s.registrations.length,spots_max:s.maxParticipants});
   } catch(err){console.error('EmailJS:',err);}
-  document.getElementById('modal-content').innerHTML='<div class="success-state"><div class="success-icon">🙏</div><h3>Inscription confirmée !</h3><p>Bonjour <strong>'+prenom+'</strong>, ton inscription est bien enregistrée.<br/><br/><strong>'+s.type+'</strong><br/>'+dateFormatted+' à '+timeStr+'<br/>'+s.lieu+'<br/><br/>Un e-mail de confirmation t'a été envoyé à <strong>'+email+'</strong>.</p><button class="btn-primary" style="margin-top:1.5rem" onclick="closeBookingDirect()">Fermer</button></div>';
+  document.getElementById('modal-content').innerHTML='<div class="success-state"><div class="success-icon">🙏</div><h3>Inscription confirmée !</h3><p>Bonjour <strong>'+prenom+'</strong>, ton inscription est bien enregistrée.<br/><br/><strong>'+s.type+'</strong><br/>'+dateFormatted+' à '+timeStr+'<br/>'+s.lieu+'<br/><br/>Un e-mail de confirmation t\'a \u00e9t\u00e9 envoy\u00e9 \u00e0 <strong>'+email+'</strong>.</p><button class="btn-primary" style="margin-top:1.5rem" onclick="closeBookingDirect()">Fermer</button></div>';
 }
 
-/* ════ ADMIN ════ */
+
 function openAdmin() {
   document.getElementById('admin-overlay').classList.add('active');
   renderAdminContent();
@@ -466,7 +467,7 @@ function renderAdminContent() {
       +'<div class="login-form">'
       +'<svg viewBox="0 0 80 80" width="60" height="60" style="margin:0 auto 1rem;display:block"><circle cx="40" cy="40" r="38" fill="none" stroke="#8f4333" stroke-width="3"/><text x="40" y="52" text-anchor="middle" font-family="Fraunces,serif" font-size="28" fill="#8f4333" font-style="italic">AM</text></svg>'
       +'<h3>Espace réservé</h3>'
-      +'<div class="form-group" style="text-align:left"><label>Mot de passe</label><input type="password" id="admin-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkAdminLogin()"/></div>'
+      +'<div class="form-group" style="text-align:left"><label>Mot de passe</label><input type="password" id="admin-pw" placeholder="••••••••" onkeydown="handleAdminKeydown(event)"/></div>'
       +'<button class="btn-primary" onclick="checkAdminLogin()">Connexion</button>'
       +'<div class="login-err" id="login-err"></div>'
       +'</div>';
@@ -475,12 +476,30 @@ function renderAdminContent() {
   renderAdminPanel(panel);
 }
 
+function handleAdminKeydown(e){if(e.key==='Enter')checkAdminLogin();}
 function checkAdminLogin() {
   var pw=document.getElementById('admin-pw').value;
   if(pw===CONFIG.adminPassword){adminLoggedIn=true;renderAdminContent();}
   else document.getElementById('login-err').textContent='Mot de passe incorrect.';
 }
 
+
+function setupAdminDelegation(panel) {
+  panel.addEventListener('click', function(e) {
+    var editBtn = e.target.closest('.edit-action');
+    var delBtn = e.target.closest('.del-action');
+    if (editBtn) openEditSession(editBtn.dataset.id);
+    if (delBtn) deleteSession(delBtn.dataset.id);
+  });
+}
+function setupBookingDelegation() {
+  var mc = document.getElementById('modal-content');
+  if (!mc) return;
+  mc.addEventListener('click', function(e) {
+    var btn = e.target.closest('.submit-action');
+    if (btn) submitBooking(btn.dataset.id);
+  });
+}
 function renderAdminPanel(panel) {
   var sorted=sessions.slice().sort(function(a,b){return a.date.localeCompare(b.date)||a.time.localeCompare(b.time);});
   var listHTML='';
@@ -495,8 +514,8 @@ function renderAdminPanel(panel) {
       +'<div style="font-size:.78rem;color:var(--green);margin-top:2px">'+s.registrations.length+'/'+s.maxParticipants+' inscrits</div>'
       +'</div>'
       +'<div class="session-actions">'
-      +'<button class="edit-btn" onclick="openEditSession(''+s.id+'')" title="Modifier">✏️</button>'
-      +'<button class="del-btn" onclick="deleteSession(''+s.id+'')" title="Supprimer">&#215;</button>'
+      +'<button class="edit-btn" class=\"edit-action\" data-id=\"'+s.id+'\" title="Modifier">✏️</button>'
+      +'<button class="del-btn" class=\"del-action\" data-id=\"'+s.id+'\" title="Supprimer">&#215;</button>'
       +'</div>'
       +'</div>';
     realRegs.forEach(function(r){
@@ -523,7 +542,7 @@ function renderAdminPanel(panel) {
     +'<div class="recur-options" id="recur-options">'
     +'<label style="display:block;margin-bottom:.5rem;font-weight:600;color:var(--green)">Jours de répétition</label>'
     +'<div id="recur-days-container"></div>'
-    +'<div class="form-row" style="margin-top:.8rem"><div class="form-group"><label>Répéter jusqu'au</label><input type="date" id="a-recur-end"/></div></div>'
+    +'<div class="form-row" style="margin-top:.8rem"><div class="form-group"><label>Répéter jusqu&#39;au</label><input type="date" id="a-recur-end"/></div></div>'
     +'</div>'
     +'<button class="btn-primary" onclick="addSession()">Ajouter la session</button>'
     +'</div>'
@@ -533,6 +552,8 @@ function renderAdminPanel(panel) {
     +'</div>'
     +'<button onclick="adminLoggedIn=false;renderAdminContent()" style="background:none;border:none;color:var(--grey);opacity:.5;cursor:pointer;font-family:var(--font);font-size:.85rem;padding:.5rem 0">Se déconnecter</button>';
 }
+
+function _setupAfterRender(panel){setupAdminDelegation(panel);}
 
 function toggleRecur() {
   var checked=document.getElementById('a-recur').checked;
@@ -589,7 +610,7 @@ function deleteSession(id) {
   if(!s)return;
   var regs=s.registrations.filter(function(r){return r.email&&r.email!=='x@x.fr';});
   var msg=regs.length>0
-    ?'Supprimer cette session et envoyer un mail d'annulation aux '+regs.length+' inscrit'+(regs.length>1?'s':'')+' ?'
+    ?'Supprimer cette session et envoyer un mail d&#39;annulation aux '+regs.length+' inscrit'+(regs.length>1?'s':'')+' ?'
     :'Supprimer cette session ? (aucun inscrit à notifier)';
   if(!confirm(msg))return;
   if(regs.length>0){
@@ -644,7 +665,7 @@ function saveEditSession() {
   }
 }
 
-/* ════ EMAILS ANNULATION/MODIFICATION ════ */
+
 async function sendInfoMail(session, type, newInfo) {
   var regs=session.registrations.filter(function(r){return r.email&&r.email!=='x@x.fr';});
   if(regs.length===0)return;
@@ -655,14 +676,14 @@ async function sendInfoMail(session, type, newInfo) {
     badge_color:isCancel?'#8f4333':'#687257',
     badge_label:isCancel?'❌ Séance annulée':'✏️ Séance modifiée',
     email_title:isCancel?'Ta séance du '+dateFormatted+' est annulée':'Ta séance du '+dateFormatted+' a été modifiée',
-    message_intro:isCancel?'Je suis désolée de t'informer que cette séance est annulée.':'Les informations de ta séance ont été mises à jour.',
+    message_intro:isCancel?"Je suis d\u00e9sol\u00e9e de t\u2019informer que cette s\u00e9ance est annul\u00e9e.":"Les informations de ta s\u00e9ance ont \u00e9t\u00e9 mises \u00e0 jour.",
     session_type:session.type,
     session_date:dateFormatted,
     session_time:timeStr,
     session_lieu:session.lieu,
-    new_info_label:isCancel?'🙏 Un mot d'Alizée':'📌 Nouvelles informations',
-    new_info_content:isCancel?'J'espère te retrouver très prochainement !':newInfo||'Merci de prendre note des changements.',
-    message_closing:isCancel?'Merci de ta compréhension 🙏':'À très bientôt sur le tapis ! 🪷',
+    new_info_label:isCancel?'🙏 Un mot d&#39;Alic\u00e9e':"\uD83D\uDCCC Nouvelles informations",
+    new_info_content:isCancel?"J\u2019esp\u00e8re te retrouver tr\u00e8s prochainement !":newInfo||"Merci de prendre note des changements.",
+    message_closing:isCancel?"Merci de ta compr\u00e9hension \uD83D\uDE4F":"\u00C0 tr\u00e8s bient\u00f4t sur le tapis ! \uD83E\uDEB7",
   };
   var sent=0;
   for(var i=0;i<regs.length;i++){
@@ -674,7 +695,7 @@ async function sendInfoMail(session, type, newInfo) {
   showToast('Mails envoyés : '+sent+' destinataire'+(sent>1?'s':''));
 }
 
-/* ════ TOAST ════ */
+
 var toastTimer=null;
 function showToast(msg,type) {
   var t=document.getElementById('toast');
@@ -685,7 +706,7 @@ function showToast(msg,type) {
   toastTimer=setTimeout(function(){t.classList.remove('show');},3500);
 }
 
-/* ════ INIT ════ */
+
 emailjs.init({publicKey:CONFIG.emailjsPublicKey,blockHeadless:false});
 renderCalendar();
 renderWeek();
