@@ -256,13 +256,6 @@ footer a{color:var(--cream);text-decoration:none;border-bottom:1px solid rgba(23
 <footer>
   <p>Alizée Monnier &mdash; Professeure de Yoga</p>
   <p style="margin-top:.5rem;opacity:.6;font-size:.8rem">Contact : <a id="contact-link" href="#">aliyoga2508&#64;gmail.com</a></p>
-  <script>
-    (function(){
-      var a=document.getElementById('contact-link');
-      var e='aliyoga2508'+'@'+'gmail.com';
-      a.href='mailto:'+e;
-    })();
-  </script>
 </footer>
 
 <script>
@@ -885,6 +878,11 @@ emailjs.init({
 renderCalendar();
 renderWeek();
 initFirebaseListener();
+// Anti-Cloudflare : reconstruction email contact
+(function(){
+  var a=document.getElementById('contact-link');
+  if(a){ var e='aliyoga2508'+'@'+'gmail.com'; a.href='mailto:'+e; }
+})();
 </script>
 </body>
 </html>
