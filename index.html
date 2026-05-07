@@ -517,8 +517,8 @@ function renderAdminPanel(panel) {
       +'<div style="font-size:.78rem;color:var(--green);margin-top:2px">'+s.registrations.length+'/'+s.maxParticipants+' inscrits</div>'
       +'</div>'
       +'<div class="session-actions">'
-      +'<button class="edit-btn" class=\"edit-action\" data-id=\"'+s.id+'\" title="Modifier">✏️</button>'
-      +'<button class="del-btn" class=\"del-action\" data-id=\"'+s.id+'\" title="Supprimer">&#215;</button>'
+      +'<button class="edit-btn edit-action" data-id="'+s.id+'" title="Modifier">✏️</button>'
+      +'<button class="del-btn del-action" data-id="'+s.id+'" title="Supprimer">&#215;</button>'
       +'</div>'
       +'</div>';
     realRegs.forEach(function(r){
@@ -554,6 +554,7 @@ function renderAdminPanel(panel) {
     +(sorted.length===0?'<p style="font-size:.85rem;opacity:.6">Aucune session.</p>':listHTML)
     +'</div>'
     +'<button onclick="adminLoggedIn=false;renderAdminContent()" style="background:none;border:none;color:var(--grey);opacity:.5;cursor:pointer;font-family:var(--font);font-size:.85rem;padding:.5rem 0">Se déconnecter</button>';
+  setupAdminDelegation(panel);
 }
 
 function _setupAfterRender(panel){setupAdminDelegation(panel);}
