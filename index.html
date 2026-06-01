@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Alizée Monnier · Yoga Traditionnel à Annecy</title>
+<meta name="description" content="Yoga traditionnel et accessible à Annecy, en extérieur et sans prérequis. Cours collectifs et individuels avec Alizée Monnier. Asana, pranayama, méditation. Réservez votre séance."/>
+
+<!-- Open Graph (aperçu quand on partage le lien) -->
+<meta property="og:title" content="Alizée Monnier · Yoga Traditionnel à Annecy"/>
+<meta property="og:description" content="Ici le yoga n'est pas une performance physique, il est la voie de reconnexion au Soi. Cours en extérieur à Annecy, sans prérequis."/>
+<meta property="og:type" content="website"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&display=swap" rel="stylesheet"/>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#ebe1d0;
+  --cream-dark:#d6c9b3;
+  --burgundy:#8f4333;
+  --burgundy-light:#b5695a;
+  --green:#687257;
+  --grey:#383837;
+  --font:'Fraunces',Georgia,serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--cream);color:var(--grey);line-height:1.65;font-weight:300}
+img{max-width:100%;display:block}
+a{color:inherit}
+.container{max-width:1080px;margin:0 auto;padding:0 1.5rem}
+
+/* ─── Boutons ─── */
+.btn{display:inline-block;background:var(--burgundy);color:var(--cream);text-decoration:none;
+  padding:.85rem 1.8rem;border-radius:2rem;font-size:1rem;letter-spacing:.04em;
+  transition:background .2s,transform .2s;border:none;cursor:pointer;font-family:var(--font)}
+.btn:hover{background:var(--burgundy-light);transform:translateY(-2px)}
+.btn-ghost{background:transparent;border:1.5px solid var(--cream);color:var(--cream)}
+.btn-ghost:hover{background:rgba(235,225,208,.15)}
+
+/* ─── Header ─── */
+header{background:var(--cream);position:sticky;top:0;z-index:100;border-bottom:1px solid var(--cream-dark)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1.5rem;max-width:1080px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:.7rem;text-decoration:none}
+.brand img{width:46px;height:46px;object-fit:contain}
+.brand b{font-weight:500;font-size:1.15rem;color:var(--burgundy);letter-spacing:.02em}
+.brand span{display:block;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--green);opacity:.85}
+.nav-links{display:flex;align-items:center;gap:1.8rem}
+.nav-links a{text-decoration:none;font-size:.95rem;color:var(--grey);opacity:.8;transition:opacity .2s}
+.nav-links a:hover{opacity:1;color:var(--burgundy)}
+.nav-links .btn{padding:.55rem 1.3rem;font-size:.9rem}
+.burger{display:none;background:none;border:none;font-size:1.6rem;color:var(--burgundy);cursor:pointer}
+
+/* ─── Hero ─── */
+.hero{text-align:center;padding:4.5rem 1.5rem 4rem}
+.hero img.elephant{width:96px;margin:0 auto 1.5rem}
+.hero .tagline{font-size:.8rem;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin-bottom:1rem}
+.hero h1{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:300;font-style:italic;color:var(--burgundy);line-height:1.15;margin-bottom:1.2rem}
+.hero p.lead{font-size:1.15rem;max-width:620px;margin:0 auto 2rem;color:var(--grey)}
+.hero .cta-row{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.hero .btn-soft{background:transparent;border:1.5px solid var(--burgundy);color:var(--burgundy)}
+.hero .btn-soft:hover{background:var(--burgundy);color:var(--cream)}
+
+/* ─── Bandeau citation ─── */
+.quote{background:var(--burgundy);color:var(--cream);text-align:center;padding:3.5rem 1.5rem}
+.quote p{font-size:clamp(1.4rem,3.5vw,2rem);font-style:italic;font-weight:300;max-width:780px;margin:0 auto;line-height:1.45}
+.quote .mark{font-size:2.5rem;opacity:.5;display:block;margin-bottom:.3rem}
+
+/* ─── Sections ─── */
+section{padding:4.5rem 0}
+.section-label{text-align:center;font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin-bottom:.6rem}
+.section-title{text-align:center;font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:300;font-style:italic;color:var(--burgundy);margin-bottom:2.5rem}
+
+/* À propos */
+.about{display:grid;grid-template-columns:1fr 1.2fr;gap:3rem;align-items:center}
+.about .photo{background:var(--cream-dark);border-radius:16px;aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;
+  color:var(--grey);opacity:.6;font-size:.85rem;text-align:center;padding:1rem;overflow:hidden}
+.about .photo img{width:100%;height:100%;object-fit:cover;border-radius:16px}
+.about h2{font-size:2rem;font-weight:300;font-style:italic;color:var(--burgundy);margin-bottom:1rem}
+.about p{margin-bottom:1rem}
+.about .sign{font-style:italic;color:var(--green);margin-top:.5rem}
+
+/* Pratiques */
+.practices{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+.card{background:#fff;background:rgba(255,255,255,.45);border:1px solid var(--cream-dark);border-radius:16px;padding:2rem;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(143,67,51,.1)}
+.card .ico{font-size:1.8rem;margin-bottom:.8rem}
+.card h3{font-size:1.4rem;font-weight:500;font-style:italic;color:var(--burgundy);margin-bottom:.6rem}
+.card p{font-size:.98rem}
+
+/* Infos pratiques */
+.infos{background:var(--green);color:var(--cream)}
+.infos .section-label{color:var(--cream);opacity:.8}
+.infos .section-title{color:var(--cream)}
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.8rem}
+.info-item{text-align:center}
+.info-item .ico{font-size:1.7rem;margin-bottom:.6rem}
+.info-item h4{font-size:1.2rem;font-weight:500;margin-bottom:.4rem}
+.info-item p{font-size:.95rem;opacity:.92}
+.weather-note{text-align:center;margin-top:2.5rem;font-size:.92rem;opacity:.85;font-style:italic;max-width:640px;margin-left:auto;margin-right:auto}
+
+/* Témoignages */
+.testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.testi{background:rgba(255,255,255,.45);border:1px solid var(--cream-dark);border-radius:16px;padding:2rem}
+.testi .stars{color:var(--burgundy);letter-spacing:.15em;margin-bottom:.8rem}
+.testi p{font-style:italic;margin-bottom:1rem}
+.testi .who{font-style:normal;font-weight:500;color:var(--green);font-size:.95rem}
+@media(max-width:760px){.testimonials{grid-template-columns:1fr}}
+
+/* CTA final */
+.cta-final{text-align:center;background:var(--cream-dark)}
+.cta-final h2{font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:300;font-style:italic;color:var(--burgundy);margin-bottom:1rem}
+.cta-final p{max-width:560px;margin:0 auto 2rem}
+
+/* Contact / footer */
+footer{background:var(--burgundy);color:var(--cream);padding:3rem 1.5rem 2rem;text-align:center}
+footer img{width:64px;margin:0 auto 1rem;opacity:.95}
+footer .contact a{color:var(--cream);text-decoration:none;display:inline-block;margin:.3rem 1rem;font-size:1rem;opacity:.9}
+footer .contact a:hover{opacity:1;text-decoration:underline}
+footer .legal{margin-top:1.5rem;font-size:.78rem;opacity:.6;letter-spacing:.03em}
+
+/* ─── Responsive ─── */
+@media(max-width:760px){
+  .nav-links{position:fixed;inset:64px 0 auto 0;background:var(--cream);flex-direction:column;gap:1.2rem;
+    padding:1.5rem;border-bottom:1px solid var(--cream-dark);transform:translateY(-150%);transition:transform .3s;align-items:stretch;text-align:center}
+  .nav-links.open{transform:translateY(0)}
+  .burger{display:block}
+  .about{grid-template-columns:1fr;gap:1.8rem}
+  .about .photo{max-width:340px;margin:0 auto;width:100%}
+  .practices{grid-template-columns:1fr}
+  .info-grid{grid-template-columns:1fr;gap:2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════ HEADER ════════ -->
+<header>
+  <div class="nav">
+    <a class="brand" href="#top">
+      <img src="logo-bordeaux.png" alt="Logo Alizée Monnier Yoga"/>
+      <span style="text-align:left">
+        <b>Alizée Monnier</b>
+        <span>Yoga traditionnel · Annecy</span>
+      </span>
+    </a>
+    <button class="burger" aria-label="Menu" onclick="document.getElementById('navlinks').classList.toggle('open')">☰</button>
+    <nav class="nav-links" id="navlinks">
+      <a href="#apropos">À propos</a>
+      <a href="#pratiques">Les pratiques</a>
+      <a href="#infos">Infos pratiques</a>
+      <a href="#contact">Contact</a>
+      <a class="btn" href="reservation.html">Réserver une séance</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ════════ HERO ════════ -->
+<section class="hero" id="top">
+  <img class="elephant" src="logo-bordeaux.png" alt="Éléphant Aliyoga"/>
+  <p class="tagline">Yoga traditionnel à Annecy · en extérieur · sans prérequis</p>
+  <h1>Se reconnecter à soi,<br/>en douceur</h1>
+  <p class="lead">Une pratique du yoga ancrée dans la tradition, pour cultiver présence et paix intérieure. Ouvert à toutes et à tous, quel que soit votre niveau.</p>
+  <div class="cta-row">
+    <a class="btn" href="reservation.html">Réserver une séance</a>
+    <a class="btn btn-soft" href="#apropos">Découvrir ma pratique</a>
+  </div>
+</section>
+
+<!-- ════════ CITATION ════════ -->
+<div class="quote">
+  <p><span class="mark">“</span>Ici le yoga n'est pas une performance physique,<br/>il est la voie de reconnexion au Soi.</p>
+</div>
+
+<!-- ════════ À PROPOS ════════ -->
+<section id="apropos">
+  <div class="container">
+    <div class="about">
+      <div class="photo">
+        <!-- Remplace ce bloc par ta photo : <img src="alizee.jpg" alt="Alizée Monnier"/> -->
+        Ta photo ici 🌿<br/>(portrait ou en pratique)
+      </div>
+      <div>
+        <p class="section-label" style="text-align:left">Enchantée</p>
+        <h2>Moi, c'est Alizée</h2>
+        <p>Professeure de yoga traditionnel à Annecy, je propose une pratique douce et accessible, loin de toute idée de performance. Pas besoin d'être souple, sportif ou expérimenté : il suffit d'avoir envie de prendre un moment pour soi.</p>
+        <p>Mon chemin vers le yoga n'a rien d'un long fleuve tranquille. Après des épreuves de vie qui ont longtemps fragilisé ma confiance en moi et mon sentiment de sécurité, j'ai croisé le yoga presque par hasard, lors de séances de Vinyasa à Montréal. Ce qui n'était au départ qu'une parenthèse est devenu une véritable ancre.</p>
+        <p>Pendant cinq années, j'ai pratiqué — en groupe puis en solo — et, peu à peu, je me suis reconstruite&nbsp;: j'ai réappris à habiter mon corps, à me faire confiance, à me sentir libre et autonome.</p>
+        <p>De retour en France, j'ai choisi de me former sérieusement au yoga traditionnel, aujourd'hui au <strong>Sadhana Life Center</strong>, pour transmettre cette passion et accompagner à mon tour celles et ceux qui souhaitent renouer le lien entre leur corps et leur esprit.</p>
+        <p class="sign">— Alizée 🐘</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ LES PRATIQUES ════════ -->
+<section id="pratiques" style="background:rgba(214,201,179,.35)">
+  <div class="container">
+    <p class="section-label">Ce que l'on explore ensemble</p>
+    <h2 class="section-title">Les pratiques</h2>
+    <div class="practices">
+      <div class="card">
+        <div class="ico">🧘</div>
+        <h3>Asana</h3>
+        <p>Les postures. On habite le corps en douceur, on l'assouplit et on le renforce, à son rythme et sans jamais forcer. Le corps devient un point d'ancrage vers le calme.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🌬️</div>
+        <h3>Pranayama</h3>
+        <p>Le souffle. Apprendre à respirer consciemment pour apaiser le mental, libérer les tensions et retrouver de l'énergie. Un outil précieux à emporter dans le quotidien.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🕉️</div>
+        <h3>Chants &amp; Mantras</h3>
+        <p>La voix et le son. Les chants traditionnels apaisent, recentrent et créent un espace de partage. Aucune compétence vocale requise : on chante avec le cœur.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🪷</div>
+        <h3>Méditation</h3>
+        <p>Le silence intérieur. Quelques minutes pour revenir à l'instant présent, observer ses pensées et cultiver une paix qui dure bien au-delà du tapis.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ INFOS PRATIQUES ════════ -->
+<section class="infos" id="infos">
+  <div class="container">
+    <p class="section-label">Comment ça se passe</p>
+    <h2 class="section-title">Infos pratiques</h2>
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="ico">🌿</div>
+        <h4>En plein air, à Annecy</h4>
+        <p>Les séances se déroulent en extérieur, dans un cadre naturel ressourçant.</p>
+      </div>
+      <div class="info-item">
+        <div class="ico">🤍</div>
+        <h4>Sans prérequis</h4>
+        <p>Ouvert à tous les niveaux et tous les âges. Débutants bienvenus.</p>
+      </div>
+      <div class="info-item">
+        <div class="ico">🧺</div>
+        <h4>À prévoir</h4>
+        <p>Un tapis, une tenue confortable, de l'eau. Et l'envie de prendre soin de soi.</p>
+      </div>
+      <div class="info-item">
+        <div class="ico">👐</div>
+        <h4>Cours collectifs &amp; individuels</h4>
+        <p>En groupe pour partager l'énergie, ou en individuel pour un accompagnement sur mesure.</p>
+      </div>
+      <div class="info-item">
+        <div class="ico">💛</div>
+        <h4>Participation libre</h4>
+        <p>Les séances fonctionnent à la donation : tu donnes selon tes moyens et ton ressenti.<br/><em>(à ajuster selon ton organisation)</em></p>
+      </div>
+      <div class="info-item">
+        <div class="ico">📅</div>
+        <h4>Sur réservation</h4>
+        <p>Le planning et les inscriptions se font en ligne, en quelques clics.</p>
+      </div>
+    </div>
+    <p class="weather-note">☁️ Les séances en extérieur peuvent être annulées ou déplacées en cas de météo défavorable. Tu es prévenu·e à l'avance par email.</p>
+  </div>
+</section>
+
+<!-- ════════ CONTRIBUTION / PRIX LIBRE ════════ -->
+<section id="contribuer" style="background:var(--burgundy);color:var(--cream);text-align:center">
+  <div class="container">
+    <img src="logo-bordeaux.png" alt="" style="width:64px;margin:0 auto 1rem;filter:brightness(0) invert(1)"/>
+    <p class="section-label" style="color:var(--cream);opacity:.8">Un yoga accessible à tous</p>
+    <h2 class="section-title" style="color:var(--cream)">Le prix libre</h2>
+    <p style="max-width:640px;margin:0 auto 1.8rem;font-size:1.1rem">
+      Pour que le yoga reste accessible à chacun·e, mes séances fonctionnent au <strong>prix libre</strong>&nbsp;:
+      tu contribues selon tes moyens et la valeur que tu accordes à la séance. Chaque participation me permet
+      de continuer à transmettre cette pratique. Merci du fond du cœur&nbsp;🙏
+    </p>
+    <div class="cta-row" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <!-- 👉 Remplace le "#" ci-dessous par ton lien de paiement (Stripe / PayPal.me) une fois créé -->
+      <a class="btn btn-ghost" href="#" style="border-color:var(--cream);color:var(--cream)">Contribuer en ligne</a>
+    </div>
+    <p style="margin-top:1.2rem;font-size:.92rem;opacity:.8;font-style:italic">
+      Possible aussi en espèces sur place, ou par virement. <!-- (ajoute ton IBAN si tu le souhaites) -->
+    </p>
+  </div>
+</section>
+
+<!-- ════════ TÉMOIGNAGES ════════ -->
+<section id="temoignages">
+  <div class="container">
+    <p class="section-label">Ce qu'en disent mes élèves</p>
+    <h2 class="section-title">Témoignages</h2>
+    <!-- ⭐ Remplace ces 3 exemples par de vrais témoignages (idéalement tes avis Google). -->
+    <div class="testimonials">
+      <div class="testi">
+        <div class="stars">★★★★★</div>
+        <p>« Une parenthèse de douceur dont je ne peux plus me passer. Alizée met tout le monde à l'aise, même les grands débutants comme moi. »</p>
+        <div class="who">— Prénom, Annecy</div>
+      </div>
+      <div class="testi">
+        <div class="stars">★★★★★</div>
+        <p>« Pratiquer en pleine nature au bord du lac, c'est magique. Je repars apaisée et rechargée à chaque séance. »</p>
+        <div class="who">— Prénom, Annecy-le-Vieux</div>
+      </div>
+      <div class="testi">
+        <div class="stars">★★★★★</div>
+        <p>« Enfin un yoga sans jugement et sans performance. Alizée est bienveillante et à l'écoute. Je recommande les yeux fermés. »</p>
+        <div class="who">— Prénom, Seynod</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ CTA FINAL ════════ -->
+<section class="cta-final">
+  <div class="container">
+    <h2>Prêt·e à dérouler ton tapis ?</h2>
+    <p>Consulte le planning et réserve ta place pour ta prochaine séance de yoga en plein air à Annecy.</p>
+    <a class="btn" href="reservation.html">Voir le planning &amp; réserver</a>
+  </div>
+</section>
+
+<!-- ════════ FOOTER / CONTACT ════════ -->
+<footer id="contact">
+  <img src="logo-bordeaux.png" alt="Aliyoga" style="filter:brightness(0) invert(1)"/>
+  <p style="font-style:italic;font-size:1.2rem;margin-bottom:1.2rem">Alizée Monnier — Yoga Traditionnel</p>
+  <div class="contact">
+    <a href="mailto:aliyoga2508@gmail.com">✉️ aliyoga2508@gmail.com</a>
+    <a href="tel:+33767957668">📞 07 67 95 76 68</a>
+  </div>
+  <p class="legal">© Alizée Monnier · Yoga à Annecy — Tous droits réservés</p>
+</footer>
+
+<script>
+// Fermer le menu mobile quand on clique un lien
+document.querySelectorAll('#navlinks a').forEach(function(a){
+  a.addEventListener('click',function(){document.getElementById('navlinks').classList.remove('open')});
+});
+</script>
+</body>
+</html>
