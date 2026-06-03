@@ -1,0 +1,22 @@
+# Fichiers système
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# Réglages d'éditeur
+.vscode/
+.idea/
+*.swp
+*~
+
+# Fichiers temporaires
+*.tmp
+*.log
+
+# Ancien dossier Website (anciennes copies + sources déplacées à la racine)
+# Conservé sur le disque mais NON versionné — à supprimer manuellement si souhaité.
+Website/
+
+# Dépendances éventuelles
+node_modules/
