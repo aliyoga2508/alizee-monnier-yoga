@@ -18,5 +18,10 @@ ehthumbs.db
 # Conservé sur le disque mais NON versionné — à supprimer manuellement si souhaité.
 Website/
 
+# Photos originales pleine résolution (10-18 Mo chacune, ~1,4 Go au total)
+# Gardées en local sur le Mac, JAMAIS versionnées. Le site utilise les versions
+# allégées du dossier /photos.
+01_Reseaux-sociaux/Photos/Officielles/
+
 # Dépendances éventuelles
 node_modules/
