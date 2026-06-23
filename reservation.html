@@ -535,6 +535,37 @@ function renderAdminPanel(panel) {
     });
   });
 
+  // ----- Fichier clients : tableau modifiable, groupé par date -----
+  var clientsHTML='', hasClients=false;
+  sorted.forEach(function(s){
+    var regsIdx=[];
+    (s.registrations||[]).forEach(function(r,idx){ if(r&&r.email&&r.email!=='x@x.fr') regsIdx.push({r:r,idx:idx}); });
+    if(regsIdx.length===0) return;
+    hasClients=true;
+    var dStr=parseDate(s.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+    clientsHTML+='<div style="margin-top:1.1rem;margin-bottom:.3rem;font-weight:700;color:var(--burgundy);font-size:.9rem;text-transform:capitalize;border-bottom:2px solid var(--cream-dark);padding-bottom:.2rem">'+dStr+' · '+_esc(s.type)+' <span style="font-weight:400;opacity:.6">('+regsIdx.length+')</span></div>';
+    var moveOpts='<option value="">↪ déplacer…</option>';
+    sorted.forEach(function(t){ if(t.id!==s.id){ var td=parseDate(t.date).toLocaleDateString('fr-FR',{day:'numeric',month:'short'}); moveOpts+='<option value="'+t.id+'">'+td+' · '+_esc(t.type)+'</option>'; }});
+    regsIdx.forEach(function(o){
+      var r=o.r, idx=o.idx, st=r.statut||'';
+      var stLabel= st==='present'?'✅ Présent': st==='absent'?'❌ Absent':'• Inscrit';
+      var stColor= st==='present'?'var(--green)': st==='absent'?'var(--burgundy)':'var(--grey)';
+      clientsHTML+='<div style="display:flex;gap:.6rem;align-items:flex-start;padding:.5rem 0;border-bottom:1px dotted var(--cream-dark)">'
+        +'<div style="flex:1;min-width:0">'
+          +'<div style="font-size:.85rem;font-weight:600;color:var(--grey)">'+_esc(r.prenom)+' '+_esc(r.nom)+'</div>'
+          +'<div style="font-size:.72rem;opacity:.6;word-break:break-all">'+_esc(r.email)+' · '+_esc(r.tel)+'</div>'
+          +'<input type="text" value="'+_escAttr(r.note||'')+'" placeholder="note…" onchange="saveNote(\''+s.id+'\','+idx+',this.value)" style="margin-top:.3rem;width:100%;font-size:.72rem;padding:.2rem .4rem;border:1px solid var(--cream-dark);border-radius:5px;font-family:var(--font);background:#fff"/>'
+        +'</div>'
+        +'<div style="display:flex;flex-direction:column;gap:.25rem;align-items:stretch;flex-shrink:0">'
+          +'<button onclick="cycleStatut(\''+s.id+'\','+idx+')" style="font-size:.7rem;padding:.2rem .5rem;border:1px solid var(--cream-dark);border-radius:5px;background:#fff;cursor:pointer;color:'+stColor+';font-family:var(--font);white-space:nowrap">'+stLabel+'</button>'
+          +'<select onchange="moveReg(\''+s.id+'\','+idx+',this.value)" style="font-size:.7rem;padding:.2rem;border:1px solid var(--cream-dark);border-radius:5px;background:#fff;cursor:pointer;font-family:var(--font);max-width:130px">'+moveOpts+'</select>'
+          +'<button onclick="removeReg(\''+s.id+'\','+idx+')" style="font-size:.7rem;padding:.2rem .5rem;border:none;border-radius:5px;background:none;cursor:pointer;color:var(--burgundy);opacity:.7;font-family:var(--font);white-space:nowrap">🗑 retirer</button>'
+        +'</div>'
+      +'</div>';
+    });
+  });
+  if(!hasClients) clientsHTML='<p style="font-size:.85rem;opacity:.6">Aucune inscription pour le moment.</p>';
+
   panel.innerHTML='<button class="modal-close" onclick="closeAdminDirect();adminLoggedIn=false;" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#383837;opacity:.5">&#215;</button>'
     +'<h2 style="font-size:1.6rem;font-weight:300;font-style:italic;color:var(--burgundy);margin-bottom:1.5rem">🌿 Espace admin</h2>'
     +'<div class="admin-section">'
@@ -559,11 +590,90 @@ function renderAdminPanel(panel) {
     +'<button class="btn-primary" onclick="addSession()">Ajouter la session</button>'
     +'</div>'
     +'<div class="admin-section">'
+    +'<h4>Fichier clients</h4>'
+    +'<p style="font-size:.8rem;opacity:.65;margin-bottom:.5rem">Liste en ligne, à jour automatiquement. Tu peux noter présent/absent, déplacer vers un autre cours, ajouter une note ou retirer quelqu’un — tout est enregistré tout seul.</p>'
+    +clientsHTML
+    +'<button class="btn-primary" onclick="exportClients()" style="margin-top:1rem">⬇️ Exporter (CSV pour Google Sheets / Excel)</button>'
+    +'</div>'
+    +'<div class="admin-section">'
     +'<h4>Sessions à venir ('+sorted.length+')</h4>'
     +(sorted.length===0?'<p style="font-size:.85rem;opacity:.6">Aucune session.</p>':listHTML)
     +'</div>'
     +'<button onclick="adminLoggedIn=false;renderAdminContent()" style="background:none;border:none;color:var(--grey);opacity:.5;cursor:pointer;font-family:var(--font);font-size:.85rem;padding:.5rem 0">Se déconnecter</button>';
   setupAdminDelegation(panel);
+}
+
+function _csvCell(v){v=String(v==null?'':v);if(/[",\n\r;]/.test(v))v='"'+v.replace(/"/g,'""')+'"';return v;}
+
+function exportClients() {
+  // Trie les séances par date (puis heure), pour un export regroupé par date de cours
+  var sorted=sessions.slice().filter(function(s){
+    return (s.registrations||[]).some(function(r){return r&&r.email&&r.email!=='x@x.fr';});
+  }).sort(function(a,b){return a.date.localeCompare(b.date)||(a.time||'').localeCompare(b.time||'');});
+  if(sorted.length===0){showToast('Aucune inscription à exporter','error');return;}
+  // Construit le CSV (séparateur ; pour ouverture directe sur Excel/Sheets FR)
+  var lines=[['Date','Séance','Prénom','Nom','Email','Téléphone'].join(';')];
+  var total=0;
+  sorted.forEach(function(s){
+    var dateFr=parseDate(s.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    var regs=(s.registrations||[]).filter(function(r){return r&&r.email&&r.email!=='x@x.fr';})
+      .sort(function(a,b){return (a.nom||'').localeCompare(b.nom||'');});
+    regs.forEach(function(r){
+      total++;
+      lines.push([dateFr,s.type,r.prenom,r.nom,r.email,r.tel].map(_csvCell).join(';'));
+    });
+  });
+  var blob=new Blob(['﻿'+lines.join('\r\n')],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url; a.download='clients-aliyoga-'+formatDate(new Date())+'.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(total+' inscription'+(total>1?'s':'')+' exportée'+(total>1?'s':'')+' ✓');
+}
+
+function _esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function _escAttr(s){return _esc(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+
+// ----- Actions sur le fichier clients (sauvegarde auto dans Firebase) -----
+function _findSession(sid){return sessions.find(function(s){return s.id===sid;});}
+
+function cycleStatut(sid, ridx){
+  var s=_findSession(sid); if(!s)return;
+  var r=s.registrations[ridx]; if(!r)return;
+  var order=['','present','absent'];
+  var i=order.indexOf(r.statut||'');
+  r.statut=order[(i+1)%order.length];
+  saveSessions();
+}
+
+function saveNote(sid, ridx, val){
+  var s=_findSession(sid); if(!s)return;
+  var r=s.registrations[ridx]; if(!r)return;
+  r.note=val;
+  saveSessions();
+}
+
+function removeReg(sid, ridx){
+  var s=_findSession(sid); if(!s)return;
+  var r=s.registrations[ridx]; if(!r)return;
+  if(!confirm('Retirer '+(r.prenom||'')+' '+(r.nom||'')+' de cette séance ?'))return;
+  s.registrations.splice(ridx,1);
+  saveSessions();
+  showToast('Inscription retirée ✓');
+}
+
+function moveReg(sid, ridx, targetSid){
+  if(!targetSid)return;
+  var from=_findSession(sid), to=_findSession(targetSid);
+  if(!from||!to){return;}
+  var r=from.registrations[ridx]; if(!r)return;
+  if(!to.registrations) to.registrations=[];
+  if(to.registrations.length>=to.maxParticipants){showToast('Le cours de destination est complet','error');renderAdminPanel(document.getElementById('admin-content'));return;}
+  from.registrations.splice(ridx,1);
+  to.registrations.push(r);
+  saveSessions();
+  showToast('Personne déplacée ✓');
 }
 
 function _setupAfterRender(panel){setupAdminDelegation(panel);}
