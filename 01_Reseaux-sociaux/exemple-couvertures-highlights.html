@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Couvertures à la une — Aliyoga</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<style>
+  :root{--creme:#ebe1d0;--bordeaux:#8f4333;--vert:#687257;}
+  body{margin:0;background:#cfc3ad;font-family:'Fraunces',serif;padding:48px;
+       display:flex;flex-direction:column;align-items:center;gap:28px;}
+  .note{font-family:system-ui,sans-serif;font-size:14px;color:#444;max-width:560px;text-align:center;line-height:1.5;}
+  .row{display:flex;flex-wrap:wrap;gap:34px;justify-content:center;}
+  .item{display:flex;flex-direction:column;align-items:center;gap:10px;}
+  /* la couverture = cercle de 130px, comme sur Insta */
+  .cover{width:130px;height:130px;border-radius:50%;background:var(--creme);
+         display:flex;flex-direction:column;align-items:center;justify-content:center;
+         box-shadow:0 6px 18px rgba(0,0,0,.18);border:3px solid #fff;}
+  .icon{font-size:40px;line-height:1;color:var(--bordeaux);}
+  .word{font-size:18px;font-weight:600;color:var(--bordeaux);letter-spacing:.5px;}
+  .name{font-family:system-ui,sans-serif;font-size:13px;color:#333;font-weight:600;}
+</style>
+</head>
+<body>
+  <div class="note">Aperçu de tes 5 couvertures « à la une ». Le principe : <b>fond crème + un seul élément bordeaux, centré</b>, le même style partout. (Sur Insta, seul le centre du cercle s'affiche → garde de la marge.)</div>
+  <div class="row">
+    <div class="item"><div class="cover"><span class="icon">🌊</span></div><div class="name">Cours au lac</div></div>
+    <div class="item"><div class="cover"><span class="icon">✦</span></div><div class="name">Réserver</div></div>
+    <div class="item"><div class="cover"><span class="icon">🪷</span></div><div class="name">Le viniyoga</div></div>
+    <div class="item"><div class="cover"><span class="icon">🐘</span></div><div class="name">Qui suis-je</div></div>
+    <div class="item"><div class="cover"><span class="icon">🍂</span></div><div class="name">La Bulle</div></div>
+  </div>
+  <div class="note" style="margin-top:8px;">Variante « mot » au lieu d'icône :</div>
+  <div class="row">
+    <div class="item"><div class="cover"><span class="word">lac</span></div><div class="name">Cours au lac</div></div>
+    <div class="item"><div class="cover"><span class="word">résa</span></div><div class="name">Réserver</div></div>
+    <div class="item"><div class="cover"><span class="word">moi</span></div><div class="name">Qui suis-je</div></div>
+  </div>
+</body>
+</html>

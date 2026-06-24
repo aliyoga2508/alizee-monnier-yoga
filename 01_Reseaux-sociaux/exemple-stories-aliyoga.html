@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Modèles de stories — Aliyoga</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Sacramento&display=swap" rel="stylesheet">
+<style>
+  :root{--creme:#ebe1d0;--bordeaux:#8f4333;--vert:#687257;--gris:#383837;}
+  body{margin:0;background:#cfc3ad;font-family:'Fraunces',serif;padding:40px;
+       display:flex;flex-wrap:wrap;gap:40px;justify-content:center;align-items:flex-start;}
+  .col{display:flex;flex-direction:column;align-items:center;gap:12px;}
+  .label{font-family:system-ui,sans-serif;font-size:14px;color:#444;font-weight:600;}
+
+  /* Story 9:16 = 1080x1920, ici à l'échelle 0.28 → 302x538 */
+  .story{position:relative;width:302px;height:538px;overflow:hidden;border-radius:18px;
+         box-shadow:0 10px 30px rgba(0,0,0,.20);display:flex;flex-direction:column;
+         align-items:center;text-align:center;box-sizing:border-box;padding:42px 26px;}
+
+  .logo-top{width:54px;opacity:.85;margin-bottom:8px;}
+  .logo-top.light{filter:brightness(0) saturate(100%) invert(92%) sepia(12%) saturate(380%) hue-rotate(343deg) brightness(98%);}
+
+  /* zone réservée au sticker interactif */
+  .sticker{font-family:system-ui,sans-serif;font-size:12px;border:2px dashed;border-radius:14px;
+           padding:14px 16px;line-height:1.3;opacity:.9;}
+
+  /* --- A : citation / texte (crème) --- */
+  .a{background:var(--creme);justify-content:center;}
+  .a .title{font-size:30px;font-weight:600;color:var(--bordeaux);line-height:1.15;margin:0 0 10px;}
+  .a .sub{font-family:'Sacramento',cursive;font-size:26px;color:var(--bordeaux);margin:0;}
+  .a .logo-bottom{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);width:60px;opacity:.6;}
+
+  /* --- B : annonce / rappel (bordeaux) --- */
+  .b{background:var(--bordeaux);justify-content:flex-start;color:var(--creme);}
+  .b .kicker{letter-spacing:2px;font-size:12px;font-family:system-ui,sans-serif;text-transform:uppercase;margin:14px 0 18px;opacity:.85;}
+  .b .title{font-size:30px;font-weight:600;line-height:1.2;margin:0 0 8px;}
+  .b .info{font-size:15px;line-height:1.5;margin:6px 0 0;}
+  .b .sticker{color:var(--creme);border-color:var(--creme);margin-top:26px;}
+
+  /* --- C : question / sondage (crème + accroche) --- */
+  .c{background:var(--creme);justify-content:flex-start;}
+  .c .accroche{font-size:24px;font-weight:600;color:var(--bordeaux);line-height:1.2;margin:18px 0 0;}
+  .c .sticker{color:var(--gris);border-color:var(--vert);margin-top:200px;}
+  .c .logo-bottom{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);width:54px;opacity:.55;}
+</style>
+</head>
+<body>
+
+  <div class="col">
+    <div class="label">A · Citation / texte</div>
+    <div class="story a">
+      <img class="logo-top" src="../BRAND ASSETS/alizee_logo_2a.png">
+      <div></div>
+      <h1 class="title">« Le souffle guide<br>le mouvement »</h1>
+      <p class="sub">reviens à toi, en douceur</p>
+      <img class="logo-bottom" src="../BRAND ASSETS/alizee_logo_2a.png">
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="label">B · Annonce / rappel de cours</div>
+    <div class="story b">
+      <img class="logo-top light" src="../BRAND ASSETS/alizee_logo_2a.png">
+      <div class="kicker">Save the date</div>
+      <h1 class="title">Portes ouvertes<br>La Bulle</h1>
+      <p class="info">🗓️ Samedi 5 juillet<br>📍 Annecy</p>
+      <div class="sticker">⏳ zone sticker<br>compte à rebours</div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="label">C · Question / sondage</div>
+    <div class="story c">
+      <p class="accroche">Une question<br>sur le yoga ? 🌿</p>
+      <div class="sticker">💬 zone sticker<br>« Pose ta question »</div>
+      <img class="logo-bottom" src="../BRAND ASSETS/alizee_logo_2a.png">
+    </div>
+  </div>
+
+</body>
+</html>

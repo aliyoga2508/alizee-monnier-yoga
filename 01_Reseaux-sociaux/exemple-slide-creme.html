@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Exemple slide crème — Aliyoga</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Sacramento&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --creme:#ebe1d0;
+    --bordeaux:#8f4333;
+    --vert:#687257;
+    --gris:#383837;
+  }
+  body{
+    margin:0;
+    background:#cfc3ad;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:24px;
+    padding:40px;
+    font-family:'Fraunces',serif;
+  }
+  .note{font-family:system-ui,sans-serif;color:#555;max-width:540px;text-align:center;font-size:14px;line-height:1.5}
+
+  /* La slide : format Instagram 4:5 = 1080x1350, ici à l'échelle 0.5 */
+  .slide{
+    position:relative;
+    width:540px;
+    height:675px;
+    background:var(--creme);
+    overflow:hidden;
+    box-shadow:0 10px 40px rgba(0,0,0,.18);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;   /* tout est centré verticalement → fini le "vide" */
+    text-align:center;
+    padding:0 56px;
+    box-sizing:border-box;
+  }
+
+  /* Éléphant en filigrane, derrière le texte, ton sur ton */
+  .watermark{
+    position:absolute;
+    left:50%; top:50%;
+    transform:translate(-50%,-50%);
+    width:78%;
+    opacity:.10;
+    pointer-events:none;
+  }
+
+  .content{position:relative; z-index:2;}
+
+  .title{
+    font-size:42px;
+    font-weight:600;
+    color:var(--bordeaux);
+    line-height:1.1;
+    margin:0 0 6px;
+  }
+  .subtitle{
+    font-family:'Sacramento',cursive;
+    font-size:34px;
+    color:var(--bordeaux);
+    line-height:1.1;
+    margin:0 0 26px;
+  }
+  /* petit séparateur végétal */
+  .divider{
+    width:46px; height:2px;
+    background:var(--vert);
+    border:none;
+    margin:0 auto 26px;
+    opacity:.7;
+  }
+  .body{
+    font-size:25px;
+    font-weight:400;
+    color:var(--gris);
+    line-height:1.55;
+    margin:0;
+  }
+  .logo-mini{
+    position:absolute;
+    bottom:26px; left:50%; transform:translateX(-50%);
+    width:84px; opacity:.55; z-index:2;
+  }
+</style>
+</head>
+<body>
+  <div class="note">Aperçu de la slide crème (échelle réduite). Le secret anti-« vide » : <b>tout le texte regroupé et centré</b>, l'éléphant en <b>filigrane derrière</b>, un petit trait vert pour rythmer, et le logo discret en bas. À reproduire dans Canva avec tes couleurs.</div>
+
+  <div class="slide">
+    <!-- filigrane : logo bordeaux en très pâle -->
+    <img class="watermark" src="../BRAND ASSETS/alizee_logo_2a.png" alt="">
+    <div class="content">
+      <h1 class="title">Pas besoin d'être souple</h1>
+      <p class="subtitle">c'est le yoga qui s'adapte à toi, pas l'inverse</p>
+      <hr class="divider">
+      <p class="body">Il dénoue le corps en douceur.<br>La souplesse vient en chemin —<br>elle n'est pas la porte d'entrée.</p>
+    </div>
+    <img class="logo-mini" src="../BRAND ASSETS/alizee_logo_2a.png" alt="">
+  </div>
+</body>
+</html>

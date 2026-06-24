@@ -8,9 +8,9 @@
 ## ⚠️ À vérifier AVANT de tout créer (15 min)
 
 Le nom "Aliyoga" n'est pas déposé. Avant de t'installer partout, vérifie qu'il est libre et réserve-le :
-- [ ] **Identifiant Instagram** : `@aliyoga` libre ? Sinon `@aliyoga.annecy` ou `@ali.yoga`
-- [ ] **Page Facebook** : nom dispo ?
-- [ ] **Nom de domaine** : `aliyoga.fr` libre ? (à réserver même si le site vient plus tard, ~10€/an)
+- [x] **Identifiant Instagram** : ✅ **`@aliyoga.om`** réservé (juin 2026). `@aliyoga` et `@ali.yoga` étaient pris ; `.om` choisi car sobre, universel, sans lien géographique (utile en cas de déménagement).
+- [ ] **Page Facebook** : nom dispo ? → viser le même `aliyoga.om` pour la cohérence.
+- [x] **Nom de domaine** : ✅ `aliyoga.fr` réservé et site en ligne.
 - [ ] **INPI** (optionnel pour l'instant) : vérifier que la marque n'est pas déposée par quelqu'un d'autre → recherche gratuite sur inpi.fr
 👉 **Réserve le même nom PARTOUT** pour une marque cohérente.
 
@@ -18,20 +18,29 @@ Le nom "Aliyoga" n'est pas déposé. Avant de t'installer partout, vérifie qu'i
 
 ## 1. Ta bio Instagram (à copier-coller)
 
+**Pseudo (@) :** `aliyoga.om`
+
 **Nom (champ recherchable)** → `Aliyoga | Yoga Annecy`
 
 **Bio :**
 ```
-🧘‍♀️ Aliyoga — Yoga traditionnel & accessible
-🌿 Cours en extérieur à Annecy, ouverts à tous
-✨ Se reconnecter à soi, en douceur
-🎓 En formation Sadhana Life Center
-👇 Réserve ton cours découverte
-[lien réservation]
+🧘‍♀️ Yoga traditionnel & accessible — viniyoga
+🌿 Cours en plein air à Annecy, ouverts à tous
+✨ Prix libre · se reconnecter à soi, en douceur
+🎓 Lignée Krishnamacharya — Sadhana Life Center
+👇 Réserve ton cours
 ```
 
-- **Photo de profil** : ton visage, souriant, lumineux. (Pas un logo seul — les gens suivent une personne.)
-- **Lien** : pour l'instant, mets directement ta **plateforme de réservation**. j'ai déja ma propre plateforme dans le dossier website
+**Version courte** (si la bio dépasse les ~150 caractères) :
+```
+🧘‍♀️ Yoga traditionnel & accessible · viniyoga
+🌿 Plein air à Annecy · prix libre · pour tous
+👇 Réserve ton cours
+```
+
+- **Photo de profil** : ton visage, souriant, lumineux. (Pas un logo seul — les gens suivent une personne.) Garde l'**éléphant bordeaux** pour la cover Facebook / les stories à la une / les posts.
+- **Lien en bio** : `aliyoga.fr` → ta plateforme de réservation maison (envoie direct chez toi).
+- **Compte** : choisis un profil **Pro / Créateur** (gratuit) pour avoir les statistiques.
 
 *(Même base déclinable sur Facebook et TikTok.)*
 
@@ -111,5 +120,5 @@ Le nom "Aliyoga" n'est pas déposé. Avant de t'installer partout, vérifie qu'i
 
 ---
 
-### Il me reste juste à savoir :
-👉 **Quelle plateforme de réservation utilises-tu ?** (pour caler le lien et voir si on peut l'intégrer au futur site)
+### Plateforme de réservation
+✅ **Plateforme maison** : `aliyoga.fr` (calendrier + réservation intégrés au site). C'est ce lien qui va dans la bio.
