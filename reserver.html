@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Réserver un cours de yoga à Annecy · Aliyoga</title>
+<meta name="description" content="Réservez votre cours de yoga à Annecy avec Alizée Monnier : cours en plein air à prix libre au bord du lac, ou en studio à La Bulle. Choisissez la formule qui vous ressemble."/>
+<link rel="canonical" href="https://aliyoga.fr/reserver.html"/>
+<meta name="theme-color" content="#8f4333"/>
+<meta property="og:title" content="Réserver un cours de yoga à Annecy · Aliyoga"/>
+<meta property="og:description" content="Cours de yoga en plein air à prix libre au bord du lac d'Annecy, ou en studio. Choisissez votre formule."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://aliyoga.fr/reserver.html"/>
+<meta property="og:image" content="https://aliyoga.fr/photos/groupe-banniere.jpg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- ════════ HEADER ════════ -->
+<header>
+  <div class="nav">
+    <a class="brand" href="index.html">
+      <img src="logo-bordeaux.png" alt="Logo Alizée Monnier Yoga"/>
+      <span style="text-align:left">
+        <b>Alizée Monnier</b>
+        <span>Yoga traditionnel · Annecy</span>
+      </span>
+    </a>
+    <button class="burger" aria-label="Menu" onclick="document.getElementById('navlinks').classList.toggle('open')">☰</button>
+    <nav class="nav-links" id="navlinks">
+      <a href="index.html#apropos">À propos</a>
+      <a href="index.html#pratiques">Les pratiques</a>
+      <a href="index.html#contact">Contact</a>
+      <div class="dropdown">
+        <a class="btn drop-toggle" href="reserver.html">Réserver un cours ▾</a>
+        <div class="dropdown-menu">
+          <a href="cours-au-lac.html">🌿 Cours au lac</a>
+          <a href="la-bulle.html">🫧 La Bulle</a>
+          <a href="cours-individuel.html">🤍 Cours individuel</a>
+          <a class="soon">✨ Pure Vitality — bientôt</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ════════ HERO SECONDAIRE ════════ -->
+<section class="page-hero" style="--page-hero-img:url('photos/groupe-banniere.jpg')">
+  <p class="tagline">Réserver un cours</p>
+  <h1>Trouve la formule qui te ressemble</h1>
+  <p class="lead">Que tu préfères pratiquer en plein air au bord du lac ou dans le cocon d'un studio, il y a une place pour toi.</p>
+</section>
+
+<!-- ════════ LES OFFRES ════════ -->
+<section>
+  <div class="container">
+    <p class="section-label">Mes cours à Annecy</p>
+    <h2 class="section-title">Où souhaites-tu pratiquer ?</h2>
+
+    <div class="offers">
+
+      <!-- Cours au lac -->
+      <div class="offer-card">
+        <div class="offer-img"><img src="photos/galerie-2.jpg" alt="Cours de yoga en plein air au bord du lac d'Annecy"/></div>
+        <div class="offer-body">
+          <span class="tag">Plein air · Prix libre</span>
+          <h3>🌿 Cours au lac</h3>
+          <p>Des séances en extérieur, au lever ou au coucher du soleil, au bord du lac d'Annecy. Ouvert à tous, sans prérequis, à prix libre : tu contribues selon tes moyens.</p>
+          <a class="btn" href="cours-au-lac.html">Découvrir &amp; réserver</a>
+        </div>
+      </div>
+
+      <!-- La Bulle -->
+      <div class="offer-card">
+        <div class="offer-img"><img src="photos/labulle-salle.jpg" alt="La salle du studio La Bulle à Argonay"/></div>
+        <div class="offer-body">
+          <span class="tag">Studio · Argonay</span>
+          <h3>🫧 La Bulle</h3>
+          <p>Mes cours au studio La Bulle, à Argonay près d'Annecy, dans un cadre chaleureux et intimiste. Places limitées, réservation et paiement en ligne.</p>
+          <a class="btn" href="la-bulle.html">Découvrir &amp; réserver</a>
+        </div>
+      </div>
+
+      <!-- Cours individuel -->
+      <div class="offer-card">
+        <div class="offer-img"><img src="photos/indiv-card.jpg" alt="Alizée guidant une élève en cours de yoga individuel à Annecy"/></div>
+        <div class="offer-body">
+          <span class="tag">Sur mesure · Chez moi ou à domicile</span>
+          <h3>🤍 Cours individuel</h3>
+          <p>Un accompagnement 100 % personnalisé, à ton rythme et selon tes besoins. Idéal pour débuter, approfondir ta pratique ou travailler un objectif précis.</p>
+          <a class="btn" href="cours-individuel.html">Découvrir</a>
+        </div>
+      </div>
+
+      <!-- Pure Vitality (à venir) -->
+      <div class="offer-card soon">
+        <div class="offer-img"><img src="photos/pratique-chant.jpg" alt="Cours de yoga à venir à Seynod"/></div>
+        <div class="offer-body">
+          <span class="tag">Studio · Seynod</span>
+          <h3>✨ Pure Vitality</h3>
+          <p>Une nouvelle adresse pour pratiquer avec moi arrive bientôt. Les horaires et les tarifs seront annoncés très prochainement — reste connecté·e !</p>
+          <span class="badge-soon">Bientôt disponible</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════ FOOTER / CONTACT ════════ -->
+<footer id="contact">
+  <img src="logo-bordeaux.png" alt="Aliyoga" style="filter:brightness(0) invert(1)"/>
+  <p style="font-style:normal;font-size:1.2rem;margin-bottom:1.2rem">Alizée Monnier — Yoga Traditionnel</p>
+  <div class="contact">
+    <a href="mailto:aliyoga2508@gmail.com">✉️ aliyoga2508@gmail.com</a>
+    <a href="tel:+33767957668">📞 07 67 95 76 68</a>
+    <a href="https://www.instagram.com/aliyoga.om" target="_blank" rel="noopener">📷 @aliyoga.om</a>
+  </div>
+  <p class="legal">Photographies : <a href="https://www.instagram.com/robin.mourot" target="_blank" rel="noopener" style="text-decoration:underline">Robin Mourot · @robin.mourot</a></p>
+  <p class="legal" style="margin-top:.4rem">© Alizée Monnier · Yoga à Annecy — Tous droits réservés</p>
+</footer>
+
+<script>
+document.querySelectorAll('#navlinks a').forEach(function(a){
+  a.addEventListener('click',function(){document.getElementById('navlinks').classList.remove('open')});
+});
+</script>
+</body>
+</html>

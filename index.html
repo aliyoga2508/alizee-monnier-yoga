@@ -78,152 +78,7 @@
 }
 </script>
 
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --cream:#ebe1d0;
-  --cream-dark:#d6c9b3;
-  --burgundy:#8f4333;
-  --burgundy-light:#b5695a;
-  --green:#687257;
-  --grey:#383837;
-  --font:'Fraunces',Georgia,serif;
-}
-html{scroll-behavior:smooth}
-body{font-family:var(--font);background:var(--cream);color:var(--grey);line-height:1.65;font-weight:300}
-img{max-width:100%;display:block}
-a{color:inherit}
-.container{max-width:1080px;margin:0 auto;padding:0 1.5rem}
-
-/* ─── Boutons ─── */
-.btn{display:inline-block;background:var(--burgundy);color:var(--cream);text-decoration:none;
-  padding:.85rem 1.8rem;border-radius:2rem;font-size:1rem;letter-spacing:.04em;
-  transition:background .2s,transform .2s;border:none;cursor:pointer;font-family:var(--font)}
-.btn:hover{background:var(--burgundy-light);transform:translateY(-2px)}
-.btn-ghost{background:transparent;border:1.5px solid var(--cream);color:var(--cream)}
-.btn-ghost:hover{background:rgba(235,225,208,.15)}
-
-/* ─── Header ─── */
-header{background:var(--cream);position:sticky;top:0;z-index:100;border-bottom:1px solid var(--cream-dark)}
-.nav{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1.5rem;max-width:1080px;margin:0 auto}
-.brand{display:flex;align-items:center;gap:.7rem;text-decoration:none}
-.brand img{width:46px;height:46px;object-fit:contain}
-.brand b{font-weight:500;font-size:1.15rem;color:var(--burgundy);letter-spacing:.02em}
-.brand span{display:block;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--green);opacity:.85}
-.nav-links{display:flex;align-items:center;gap:1.8rem}
-.nav-links a{text-decoration:none;font-size:.95rem;color:var(--grey);opacity:.8;transition:opacity .2s}
-.nav-links a:hover{opacity:1;color:var(--burgundy)}
-.nav-links .btn{padding:.55rem 1.3rem;font-size:.9rem}
-.burger{display:none;background:none;border:none;font-size:1.6rem;color:var(--burgundy);cursor:pointer}
-
-/* ─── Hero ─── */
-.hero{position:relative;text-align:center;padding:6.5rem 1.5rem 6rem;color:var(--cream);
-  background:linear-gradient(rgba(56,56,55,.40),rgba(56,56,55,.55)),url('photos/hero.jpg') center 35%/cover no-repeat}
-.hero img.elephant{width:84px;margin:0 auto 1.4rem;filter:brightness(0) invert(1);opacity:.95}
-.hero .tagline{font-size:.8rem;letter-spacing:.22em;text-transform:uppercase;color:var(--cream);opacity:.92;margin-bottom:1rem}
-.hero h1{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:300;font-style:italic;color:#fff;line-height:1.15;margin-bottom:1.2rem;text-shadow:0 2px 20px rgba(0,0,0,.3)}
-.hero p.lead{font-size:1.15rem;max-width:620px;margin:0 auto 2rem;color:var(--cream)}
-.hero .cta-row{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
-.hero .btn-soft{background:transparent;border:1.5px solid var(--cream);color:var(--cream)}
-.hero .btn-soft:hover{background:var(--cream);color:var(--burgundy)}
-
-/* ─── Bandeau citation ─── */
-.quote{background:var(--burgundy);color:var(--cream);text-align:center;padding:3.5rem 1.5rem}
-.quote p{font-size:clamp(1.4rem,3.5vw,2rem);font-style:italic;font-weight:300;max-width:780px;margin:0 auto;line-height:1.45}
-.quote .mark{font-size:2.5rem;opacity:.5;display:block;margin-bottom:.3rem}
-
-/* ─── Sections ─── */
-section{padding:4.5rem 0}
-.section-label{text-align:center;font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin-bottom:.6rem}
-.section-title{text-align:center;font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:300;font-style:italic;color:var(--burgundy);margin-bottom:2.5rem}
-
-/* À propos */
-.about{display:grid;grid-template-columns:1fr 1.2fr;gap:3rem;align-items:center}
-.about .photo{border-radius:16px;aspect-ratio:4/5;overflow:hidden}
-.about .photo img{width:100%;height:100%;object-fit:cover;display:block}
-.about h2{font-size:2rem;font-weight:300;font-style:italic;color:var(--burgundy);margin-bottom:1rem}
-.about p{margin-bottom:1rem;text-align:justify}
-.about .sign{font-style:italic;color:var(--green);margin-top:.5rem}
-
-/* Pratiques */
-.practices{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
-.card{background:#fff;background:rgba(255,255,255,.45);border:1px solid var(--cream-dark);border-radius:16px;padding:2rem;transition:transform .2s,box-shadow .2s;overflow:hidden}
-.card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(143,67,51,.1)}
-.card .card-img{height:220px;margin:-2rem -2rem 1.3rem;overflow:hidden}
-.card .card-img img{width:100%;height:100%;object-fit:cover;object-position:center 28%;transition:transform .4s}
-.card:hover .card-img img{transform:scale(1.04)}
-.card .ico{font-size:1.8rem;margin-bottom:.8rem}
-.card h3{font-size:1.4rem;font-weight:500;font-style:italic;color:var(--burgundy);margin-bottom:.6rem}
-.card p{font-size:.98rem;text-align:justify}
-
-/* Infos pratiques */
-.infos{background:var(--green);color:var(--cream)}
-.infos .section-label{color:var(--cream);opacity:.8}
-.infos .section-title{color:var(--cream)}
-.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.8rem}
-.info-item{text-align:center}
-.info-item .ico{font-size:1.7rem;margin-bottom:.6rem}
-.info-item h4{font-size:1.2rem;font-weight:500;margin-bottom:.4rem}
-.info-item p{font-size:.95rem;opacity:.92}
-.weather-note{text-align:center;margin-top:2.5rem;font-size:.92rem;opacity:.85;font-style:italic;max-width:640px;margin-left:auto;margin-right:auto}
-
-/* Témoignages */
-.testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
-.testi{background:rgba(255,255,255,.45);border:1px solid var(--cream-dark);border-radius:16px;padding:2rem}
-.testi .stars{color:var(--burgundy);letter-spacing:.15em;margin-bottom:.8rem}
-.testi p{font-style:italic;margin-bottom:1rem}
-.testi .who{font-style:normal;font-weight:500;color:var(--green);font-size:.95rem}
-@media(max-width:760px){.testimonials{grid-template-columns:1fr}}
-
-/* Bannière photo de groupe (pleine largeur) */
-.band-photo{position:relative;min-height:60vh;display:flex;align-items:flex-end;justify-content:center;
-  background:linear-gradient(rgba(56,56,55,.15),rgba(56,56,55,.45)),url('photos/groupe-banniere.jpg') center 30%/cover no-repeat}
-.band-photo .cap{color:var(--cream);text-align:center;padding:2.5rem 1.5rem;max-width:760px;
-  font-style:italic;font-size:clamp(1.3rem,3vw,1.95rem);line-height:1.4;text-shadow:0 2px 16px rgba(0,0,0,.45)}
-
-/* Galerie */
-.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
-.gallery .g-item{display:block;border-radius:14px;overflow:hidden;aspect-ratio:4/3}
-.gallery .g-item img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-.gallery .g-item:hover img{transform:scale(1.06)}
-@media(max-width:760px){.gallery{grid-template-columns:1fr 1fr;gap:.7rem}}
-
-/* Prix libre (photo + texte) */
-.prix-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:3rem;align-items:center;text-align:left}
-.prix-grid .photo{border-radius:16px;overflow:hidden;aspect-ratio:4/5}
-.prix-grid .photo img{width:100%;height:100%;object-fit:cover;object-position:center 25%}
-.prix-grid .section-label,.prix-grid .section-title{text-align:left}
-@media(max-width:760px){
-  .prix-grid{grid-template-columns:1fr;gap:1.8rem;text-align:center}
-  .prix-grid .photo{max-width:300px;margin:0 auto;aspect-ratio:4/5}
-  .prix-grid .section-label,.prix-grid .section-title{text-align:center}
-}
-
-/* CTA final */
-.cta-final{position:relative;text-align:center;color:var(--cream);
-  background:linear-gradient(rgba(56,56,55,.55),rgba(56,56,55,.62)),url('photos/cta-groupe.jpg') center/cover no-repeat}
-.cta-final h2{font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:300;font-style:italic;color:#fff;margin-bottom:1rem;text-shadow:0 2px 18px rgba(0,0,0,.3)}
-.cta-final p{max-width:560px;margin:0 auto 2rem;color:var(--cream)}
-
-/* Contact / footer */
-footer{background:var(--burgundy);color:var(--cream);padding:3rem 1.5rem 2rem;text-align:center}
-footer img{width:64px;margin:0 auto 1rem;opacity:.95}
-footer .contact a{color:var(--cream);text-decoration:none;display:inline-block;margin:.3rem 1rem;font-size:1rem;opacity:.9}
-footer .contact a:hover{opacity:1;text-decoration:underline}
-footer .legal{margin-top:1.5rem;font-size:.78rem;opacity:.6;letter-spacing:.03em}
-
-/* ─── Responsive ─── */
-@media(max-width:760px){
-  .nav-links{position:fixed;inset:64px 0 auto 0;background:var(--cream);flex-direction:column;gap:1.2rem;
-    padding:1.5rem;border-bottom:1px solid var(--cream-dark);transform:translateY(-150%);transition:transform .3s;align-items:stretch;text-align:center}
-  .nav-links.open{transform:translateY(0)}
-  .burger{display:block}
-  .about{grid-template-columns:1fr;gap:1.8rem}
-  .about .photo{max-width:340px;margin:0 auto;width:100%}
-  .practices{grid-template-columns:1fr}
-  .info-grid{grid-template-columns:1fr;gap:2rem}
-}
-</style>
+<link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
@@ -241,9 +96,16 @@ footer .legal{margin-top:1.5rem;font-size:.78rem;opacity:.6;letter-spacing:.03em
     <nav class="nav-links" id="navlinks">
       <a href="#apropos">À propos</a>
       <a href="#pratiques">Les pratiques</a>
-      <a href="#infos">Infos pratiques</a>
       <a href="#contact">Contact</a>
-      <a class="btn" href="reservation.html">Réserver une séance</a>
+      <div class="dropdown">
+        <a class="btn drop-toggle" href="reserver.html">Réserver un cours ▾</a>
+        <div class="dropdown-menu">
+          <a href="cours-au-lac.html">🌿 Cours au lac</a>
+          <a href="la-bulle.html">🫧 La Bulle</a>
+          <a href="cours-individuel.html">🤍 Cours individuel</a>
+          <a class="soon">✨ Pure Vitality — bientôt</a>
+        </div>
+      </div>
     </nav>
   </div>
 </header>
@@ -255,7 +117,7 @@ footer .legal{margin-top:1.5rem;font-size:.78rem;opacity:.6;letter-spacing:.03em
   <h1>Se reconnecter à soi,<br/>en douceur</h1>
   <p class="lead">Une pratique du yoga ancrée dans la tradition, pour cultiver présence et paix intérieure. Ouvert à toutes et à tous, quel que soit votre niveau.</p>
   <div class="cta-row">
-    <a class="btn" href="reservation.html">Réserver une séance</a>
+    <a class="btn" href="reserver.html">Réserver un cours</a>
     <a class="btn btn-soft" href="#apropos">Découvrir ma pratique</a>
   </div>
 </section>
@@ -323,74 +185,47 @@ footer .legal{margin-top:1.5rem;font-size:.78rem;opacity:.6;letter-spacing:.03em
   </div>
 </section>
 
-<!-- ════════ BANNIÈRE PHOTO DE GROUPE ════════ -->
-<div class="band-photo">
-  <p class="cap">Des séances en groupe, au lever ou au coucher du soleil, au bord du lac d'Annecy.</p>
-</div>
-
-<!-- ════════ INFOS PRATIQUES ════════ -->
-<section class="infos" id="infos">
+<!-- ════════ MES COURS (aperçu → pages dédiées) ════════ -->
+<section id="cours">
   <div class="container">
-    <p class="section-label">Comment ça se passe</p>
-    <h2 class="section-title">Infos pratiques</h2>
-    <div class="info-grid">
-      <div class="info-item">
-        <div class="ico">🌿</div>
-        <h4>En plein air, à Annecy</h4>
-        <p>Les séances se déroulent en extérieur, dans un cadre naturel ressourçant.</p>
-      </div>
-      <div class="info-item">
-        <div class="ico">🤍</div>
-        <h4>Sans prérequis</h4>
-        <p>Ouvert à tous les niveaux et tous les âges. Débutants bienvenus.</p>
-      </div>
-      <div class="info-item">
-        <div class="ico">🧺</div>
-        <h4>À prévoir</h4>
-        <p>Un tapis, une tenue confortable, de l'eau. Et l'envie de prendre soin de soi.</p>
-      </div>
-      <div class="info-item">
-        <div class="ico">👐</div>
-        <h4>Cours collectifs &amp; individuels</h4>
-        <p>En groupe pour partager l'énergie, ou en individuel pour un accompagnement sur mesure.</p>
-      </div>
-      <div class="info-item">
-        <div class="ico">💛</div>
-        <h4>Participation libre</h4>
-        <p>Les séances fonctionnent à la donation : tu donnes selon tes moyens et ton ressenti.<br/><em>(à ajuster selon ton organisation)</em></p>
-      </div>
-      <div class="info-item">
-        <div class="ico">📅</div>
-        <h4>Sur réservation</h4>
-        <p>Le planning et les inscriptions se font en ligne, en quelques clics.</p>
-      </div>
-    </div>
-    <p class="weather-note">☁️ Les séances en extérieur peuvent être annulées ou déplacées en cas de météo défavorable. Tu es prévenu·e à l'avance par email.</p>
-  </div>
-</section>
+    <p class="section-label">Pratiquer avec moi</p>
+    <h2 class="section-title">Mes cours</h2>
+    <p class="section-intro">
+      Choisis la formule qui te ressemble : en plein air à prix libre au bord du lac, en studio,
+      ou en accompagnement individuel sur mesure.
+    </p>
+    <div class="offers-3">
 
-<!-- ════════ CONTRIBUTION / PRIX LIBRE ════════ -->
-<section id="contribuer" style="background:var(--burgundy);color:var(--cream)">
-  <div class="container">
-    <div class="prix-grid">
-      <div class="photo">
-        <img src="photos/prix-libre.jpg" alt="Alizée, mains sur le cœur, au coucher du soleil"/>
-      </div>
-      <div>
-        <p class="section-label" style="color:var(--cream);opacity:.8">Un yoga accessible à tous</p>
-        <h2 class="section-title" style="color:var(--cream);margin-bottom:1.2rem">Le prix libre</h2>
-        <p style="margin-bottom:1.8rem;font-size:1.1rem;text-align:justify">
-          Pour que le yoga reste accessible à chacun·e, mes séances en extérieur fonctionnent au <strong>prix libre</strong>&nbsp;:
-          tu contribues selon tes moyens et la valeur que tu accordes à la séance. Chaque participation me permet
-          de continuer à transmettre cette pratique. Merci du fond du cœur&nbsp;🙏
-        </p>
-        <div class="cta-row" style="display:flex;gap:1rem;flex-wrap:wrap">
-          <a class="btn btn-ghost" href="https://buy.stripe.com/fZu28tgJp3Iu04u4HO33W00" target="_blank" rel="noopener" style="border-color:var(--cream);color:var(--cream)">Contribuer en ligne</a>
+      <div class="offer-card">
+        <div class="offer-img"><img src="photos/galerie-2.jpg" alt="Cours de yoga en plein air au bord du lac d'Annecy"/></div>
+        <div class="offer-body">
+          <span class="tag">Plein air · Prix libre</span>
+          <h3>🌿 Cours au lac</h3>
+          <p>Des séances en extérieur, au bord du lac d'Annecy, ouvertes à toutes et à tous, à prix libre.</p>
+          <a class="btn" href="cours-au-lac.html">Découvrir</a>
         </div>
-        <p style="margin-top:1.2rem;font-size:.92rem;opacity:.8;font-style:italic">
-          Possible aussi en espèces sur place, ou par virement. <!-- (ajoute ton IBAN si tu le souhaites) -->
-        </p>
       </div>
+
+      <div class="offer-card">
+        <div class="offer-img"><img src="photos/labulle-salle.jpg" alt="Cours de yoga au studio La Bulle à Argonay"/></div>
+        <div class="offer-body">
+          <span class="tag">Studio · Argonay</span>
+          <h3>🫧 La Bulle</h3>
+          <p>Mes cours au studio, en petit groupe, dans un cadre chaleureux et intimiste.</p>
+          <a class="btn" href="la-bulle.html">Découvrir</a>
+        </div>
+      </div>
+
+      <div class="offer-card">
+        <div class="offer-img"><img src="photos/indiv-card.jpg" alt="Cours de yoga individuel à Annecy"/></div>
+        <div class="offer-body">
+          <span class="tag">Sur mesure</span>
+          <h3>🤍 Cours individuel</h3>
+          <p>Un accompagnement 100 % personnalisé, dans la tradition du yoga thérapie (cikitsa).</p>
+          <a class="btn" href="cours-individuel.html">Découvrir</a>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -420,18 +255,19 @@ footer .legal{margin-top:1.5rem;font-size:.78rem;opacity:.6;letter-spacing:.03em
 <section class="cta-final">
   <div class="container">
     <h2>Prêt·e à dérouler ton tapis ?</h2>
-    <p>Consulte le planning et réserve ta place pour ta prochaine séance de yoga en plein air à Annecy.</p>
-    <a class="btn" href="reservation.html">Voir le planning &amp; réserver</a>
+    <p>Découvre toutes mes formules de cours de yoga à Annecy et alentours, et réserve ta place en quelques clics.</p>
+    <a class="btn" href="reserver.html">Réserver un cours</a>
   </div>
 </section>
 
 <!-- ════════ FOOTER / CONTACT ════════ -->
 <footer id="contact">
   <img src="logo-bordeaux.png" alt="Aliyoga" style="filter:brightness(0) invert(1)"/>
-  <p style="font-style:italic;font-size:1.2rem;margin-bottom:1.2rem">Alizée Monnier — Yoga Traditionnel</p>
+  <p style="font-style:normal;font-size:1.2rem;margin-bottom:1.2rem">Alizée Monnier — Yoga Traditionnel</p>
   <div class="contact">
     <a href="mailto:aliyoga2508@gmail.com">✉️ aliyoga2508@gmail.com</a>
     <a href="tel:+33767957668">📞 07 67 95 76 68</a>
+    <a href="https://www.instagram.com/aliyoga.om" target="_blank" rel="noopener">📷 @aliyoga.om</a>
   </div>
   <p class="legal">Photographies : <a href="https://www.instagram.com/robin.mourot" target="_blank" rel="noopener" style="text-decoration:underline">Robin Mourot · @robin.mourot</a></p>
   <p class="legal" style="margin-top:.4rem">© Alizée Monnier · Yoga à Annecy — Tous droits réservés</p>

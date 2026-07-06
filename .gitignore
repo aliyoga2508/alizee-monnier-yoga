@@ -23,5 +23,18 @@ Website/
 # allégées du dossier /photos.
 01_Reseaux-sociaux/Photos/Officielles/
 
+# ─── Documents internes / personnels — JAMAIS publiés (dépôt public) ───
+# Étude de marché (stratégie de prix + concurrents), matériel de formation,
+# notes d'organisation, guides et formulaires internes. Gardés en local.
+Etude-marche-prix-yoga-Annecy.md
+Cours yoga/
+Presentation-studio-yoga.md
+Guide-mailing-personnalise-formulaire.md
+Formulaire-feedback-cours.md
+creer-formulaire-feedback.gs
+00_Echeancier-ete-rentree.md
+00_Organisation-semaine.md
+00_Priorites-en-cours.md
+
 # Dépendances éventuelles
 node_modules/
