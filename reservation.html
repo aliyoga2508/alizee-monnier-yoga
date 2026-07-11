@@ -560,10 +560,13 @@ function renderAdminPanel(panel) {
     var timeStr=s.time+(s.timeEnd?' – '+s.timeEnd:'');
     var dateStr=parseDate(s.date).toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});
     listHTML+='<div class="session-list-item">'
+      +'<div style="display:flex;align-items:center;gap:.6rem;min-width:0">'
+      +'<input type="checkbox" class="sess-check" value="'+s.id+'" style="width:16px;height:16px;accent-color:var(--burgundy);cursor:pointer;flex-shrink:0"/>'
       +'<div>'
       +'<div style="font-weight:600;color:var(--burgundy)">'+s.type+'</div>'
       +'<div style="opacity:.65;font-size:.8rem">'+dateStr+' à '+timeStr+' · '+s.lieu+'</div>'
       +'<div style="font-size:.78rem;color:var(--green);margin-top:2px">'+s.registrations.length+'/'+s.maxParticipants+' inscrits</div>'
+      +'</div>'
       +'</div>'
       +'<div class="session-actions">'
       +'<button class="edit-btn edit-action" data-id="'+s.id+'" title="Modifier">✏️</button>'
@@ -623,6 +626,7 @@ function renderAdminPanel(panel) {
     +'<div class="form-group"><label>Lien Google Maps (optionnel)</label><input type="url" id="a-gmaps" placeholder="https://maps.google.com/…"/></div>'
     +'<div class="recur-toggle"><input type="checkbox" id="a-recur" onchange="toggleRecur()"/><label for="a-recur">🔁 Session récurrente</label></div>'
     +'<div class="recur-options" id="recur-options">'
+    +'<p style="font-size:.78rem;opacity:.7;margin:0 0 .6rem">🗓️ La série démarre à la « Date » indiquée ci-dessus et se répète les jours cochés, jusqu&#39;à la date de fin.</p>'
     +'<label style="display:block;margin-bottom:.5rem;font-weight:600;color:var(--green)">Jours de répétition</label>'
     +'<div id="recur-days-container"></div>'
     +'<div class="form-row" style="margin-top:.8rem"><div class="form-group"><label>Répéter jusqu&#39;au</label><input type="date" id="a-recur-end"/></div></div>'
@@ -637,6 +641,7 @@ function renderAdminPanel(panel) {
     +'</div>'
     +'<div class="admin-section">'
     +'<h4>Sessions à venir ('+sorted.length+')</h4>'
+    +(sorted.length>0?'<p style="font-size:.78rem;opacity:.65;margin-bottom:.5rem">Coche des séances pour en supprimer plusieurs d&#39;un coup.</p><button onclick="deleteSelectedSessions()" style="background:var(--burgundy);color:var(--cream);border:none;border-radius:2rem;padding:.5rem 1.2rem;font-size:.85rem;cursor:pointer;font-family:var(--font);margin-bottom:.8rem">🗑 Supprimer la sélection</button>':'')
     +(sorted.length===0?'<p style="font-size:.85rem;opacity:.6">Aucune session.</p>':listHTML)
     +'</div>'
     +'<button onclick="adminLoggedIn=false;renderAdminContent()" style="background:none;border:none;color:var(--grey);opacity:.5;cursor:pointer;font-family:var(--font);font-size:.85rem;padding:.5rem 0">Se déconnecter</button>';
@@ -746,17 +751,20 @@ function addSession() {
     saveSessions();
     showToast('Session ajoutée !');
   } else {
+    var startVal=document.getElementById('a-date').value;
     var selectedDays=Array.from(document.querySelectorAll('.recur-day:checked')).map(function(c){return parseInt(c.value);});
     var recurEnd=document.getElementById('a-recur-end').value;
+    if(!startVal){showToast('Indiquez une date de début','error');return;}
     if(selectedDays.length===0){showToast('Sélectionnez au moins un jour','error');return;}
     if(!recurEnd){showToast('Indiquez une date de fin','error');return;}
-    var endDate=new Date(recurEnd);
-    var current=new Date(); current.setHours(0,0,0,0);
+    var endDate=new Date(recurEnd+'T23:59');
+    var current=new Date(startVal+'T00:00');
+    var baseId='s'+Date.now();
     var count=0;
-    while(current<=endDate&&count<100){
+    while(current<=endDate&&count<200){
       var dow=(current.getDay()+6)%7;
       if(selectedDays.includes(dow)){
-        sessions.push({id:'s'+Date.now()+'_'+count,date:formatDate(current),time:time,timeEnd:timeEnd,lieu:lieu,gmaps:gmaps,maxParticipants:max,registrations:[],type:type});
+        sessions.push({id:baseId+'_'+count,date:formatDate(current),time:time,timeEnd:timeEnd,lieu:lieu,gmaps:gmaps,maxParticipants:max,registrations:[],type:type});
         count++;
       }
       current.setDate(current.getDate()+1);
@@ -786,6 +794,23 @@ function deleteSession(id) {
     sessions=sessions.filter(function(x){return ids.indexOf(x.id)===-1;});
     saveSessions();
     showToast(targets.length>1?(targets.length+' séances supprimées'):'Session supprimée');
+  });
+}
+
+function deleteSelectedSessions(){
+  var checks=Array.prototype.slice.call(document.querySelectorAll('.sess-check:checked'));
+  if(checks.length===0){showToast('Coche au moins une séance','error');return;}
+  var ids=checks.map(function(c){return c.value;});
+  var targets=sessions.filter(function(s){return ids.indexOf(s.id)!==-1;});
+  var withRegs=targets.filter(function(t){return t.registrations.filter(function(r){return r.email&&r.email!=='x@x.fr';}).length>0;});
+  var nbRegs=withRegs.reduce(function(n,t){return n+t.registrations.filter(function(r){return r.email&&r.email!=='x@x.fr';}).length;},0);
+  var msg='Supprimer '+targets.length+' séance'+(targets.length>1?'s':'')
+    +(nbRegs>0?(' et envoyer un mail d\'annulation à '+nbRegs+' inscrit'+(nbRegs>1?'s':'')+' ?'):' ? (aucun inscrit à notifier)');
+  if(!confirm(msg))return;
+  Promise.all(withRegs.map(function(t){return sendInfoMail(t,'annulation');})).then(function(){
+    sessions=sessions.filter(function(x){return ids.indexOf(x.id)===-1;});
+    saveSessions();
+    showToast(targets.length+' séance'+(targets.length>1?'s':'')+' supprimée'+(targets.length>1?'s':''));
   });
 }
 
