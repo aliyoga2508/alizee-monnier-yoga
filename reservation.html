@@ -66,6 +66,8 @@ header{background:var(--burgundy);padding:1.2rem 2rem;display:flex;align-items:c
 .session-chip:hover{background:var(--burgundy)}
 .session-chip.full{background:var(--grey);opacity:.6;cursor:default}
 .session-chip.full:hover{background:var(--grey)}
+.session-chip.past{background:var(--cream-dark);color:var(--grey);opacity:.7;cursor:default}
+.session-chip.past:hover{background:var(--cream-dark)}
 .chip-time{font-weight:600;font-size:.68rem;display:block}
 .chip-spots{opacity:.85;font-size:.65rem}
 
@@ -145,6 +147,8 @@ header{background:var(--burgundy);padding:1.2rem 2rem;display:flex;align-items:c
 .week-session-card:hover{background:var(--burgundy)}
 .week-session-card.full{background:var(--grey);opacity:.6;cursor:default}
 .week-session-card.full:hover{background:var(--grey)}
+.week-session-card.past{background:var(--cream-dark);color:var(--grey);opacity:.75;cursor:default}
+.week-session-card.past:hover{background:var(--cream-dark)}
 .wsc-type{font-size:.9rem;font-weight:600}
 .wsc-meta{font-size:.75rem;opacity:.85;margin-top:.15rem}
 .week-empty{font-size:.8rem;color:var(--grey);opacity:.4;padding:.4rem 0;font-style:italic}
@@ -357,6 +361,15 @@ function changeMonth(dir) {
   renderCalendar();
 }
 
+/* ─── Séances passées + séries récurrentes ─── */
+function sessionStart(s){ return new Date((s.date||'1970-01-01')+'T'+(s.time||'00:00')); }
+function isPastSession(s){ return sessionStart(s).getTime() < Date.now(); }
+function seriesKey(s){ var i=(s.id||'').indexOf('_'); return i>0 ? s.id.slice(0,i) : null; }
+function followingInSeries(s){
+  var key=seriesKey(s); if(!key) return [s];
+  return sessions.filter(function(x){ return seriesKey(x)===key && x.date>=s.date; });
+}
+
 function renderCalendar() {
   var year=currentDate.getFullYear(), month=currentDate.getMonth();
   var titleEl = document.getElementById('month-title');
@@ -384,10 +397,11 @@ function renderCalendar() {
     visibleSessions().filter(function(s){return s.date===ds;}).forEach(function(s){
       var chip=document.createElement('div');
       var isFull=s.registrations.length>=s.maxParticipants;
-      chip.className='session-chip'+(isFull?' full':'');
+      var isPast=isPastSession(s);
+      chip.className='session-chip'+(isFull?' full':'')+(isPast?' past':'');
       var timeStr=s.time+(s.timeEnd?'–'+s.timeEnd:'');
       chip.innerHTML='<span class="chip-time">'+timeStr+' · '+s.type+'</span><span class="chip-spots">'+s.registrations.length+'/'+s.maxParticipants+'</span>';
-      if(!isFull)(function(id){chip.onclick=function(){openBooking(id);};})(s.id);
+      if(!isFull&&!isPast)(function(id){chip.onclick=function(){openBooking(id);};})(s.id);
       cell.appendChild(chip);
     });
     grid.appendChild(cell);
@@ -423,11 +437,12 @@ function renderWeek() {
     } else {
       daySess.forEach(function(s){
         var isFull=s.registrations.length>=s.maxParticipants;
+        var isPast=isPastSession(s);
         var card=document.createElement('div');
-        card.className='week-session-card'+(isFull?' full':'');
+        card.className='week-session-card'+(isFull?' full':'')+(isPast?' past':'');
         var timeStr=s.time+(s.timeEnd?' – '+s.timeEnd:'');
-        card.innerHTML='<div class="wsc-type">'+s.type+'</div><div class="wsc-meta">⏰ '+timeStr+' · 📍 '+s.lieu+' · '+s.registrations.length+'/'+s.maxParticipants+(isFull?' · <strong>Complet</strong>':'')+'</div>';
-        if(!isFull)(function(id){card.onclick=function(){openBooking(id);};})(s.id);
+        card.innerHTML='<div class="wsc-type">'+s.type+'</div><div class="wsc-meta">⏰ '+timeStr+' · 📍 '+s.lieu+' · '+s.registrations.length+'/'+s.maxParticipants+(isFull?' · <strong>Complet</strong>':'')+(isPast?' · <em>Passé</em>':'')+'</div>';
+        if(!isFull&&!isPast)(function(id){card.onclick=function(){openBooking(id);};})(s.id);
         sessDiv.appendChild(card);
       });
     }
@@ -440,6 +455,7 @@ function renderWeek() {
 function openBooking(id) {
   var s=sessions.find(function(x){return x.id===id;});
   if(!s)return;
+  if(isPastSession(s)){ showToast('Cette séance est déjà passée','error'); return; }
   var isFull=s.registrations.length>=s.maxParticipants;
   var pct=Math.round(s.registrations.length/s.maxParticipants*100);
   var fillClass=pct>=100?'danger':pct>=70?'warning':'';
@@ -755,21 +771,22 @@ function addSession() {
 function deleteSession(id) {
   var s=sessions.find(function(x){return x.id===id;});
   if(!s)return;
-  var regs=s.registrations.filter(function(r){return r.email&&r.email!=='x@x.fr';});
-  var msg=regs.length>0
-    ?'Supprimer cette session et envoyer un mail d&#39;annulation aux '+regs.length+' inscrit'+(regs.length>1?'s':'')+' ?'
-    :'Supprimer cette session ? (aucun inscrit à notifier)';
-  if(!confirm(msg))return;
-  if(regs.length>0){
-    sendInfoMail(s,'annulation').then(function(){
-      sessions=sessions.filter(function(x){return x.id!==id;});
-      saveSessions();
-    });
-  } else {
-    sessions=sessions.filter(function(x){return x.id!==id;});
-    saveSessions();
-    showToast('Session supprimée');
+  var targets=[s];
+  if(seriesKey(s)){
+    var wantFollowing=confirm("Ce cours fait partie d'une série récurrente.\n\nOK  =  supprimer CE cours ET tous les cours suivants de la série\nAnnuler  =  supprimer SEULEMENT ce cours-ci");
+    if(wantFollowing) targets=followingInSeries(s);
   }
+  var withRegs=targets.filter(function(t){return t.registrations.filter(function(r){return r.email&&r.email!=='x@x.fr';}).length>0;});
+  var nbRegs=withRegs.reduce(function(n,t){return n+t.registrations.filter(function(r){return r.email&&r.email!=='x@x.fr';}).length;},0);
+  var msg=(targets.length>1?('Supprimer ces '+targets.length+' séances'):'Supprimer cette séance')
+    +(nbRegs>0?(' et envoyer un mail d\'annulation à '+nbRegs+' inscrit'+(nbRegs>1?'s':'')+' ?'):' ? (aucun inscrit à notifier)');
+  if(!confirm(msg))return;
+  var ids=targets.map(function(t){return t.id;});
+  Promise.all(withRegs.map(function(t){return sendInfoMail(t,'annulation');})).then(function(){
+    sessions=sessions.filter(function(x){return ids.indexOf(x.id)===-1;});
+    saveSessions();
+    showToast(targets.length>1?(targets.length+' séances supprimées'):'Session supprimée');
+  });
 }
 
 function openEditSession(id) {
@@ -801,15 +818,32 @@ function saveEditSession() {
   var idx=sessions.findIndex(function(s){return s.id===editingSessionId;});
   if(idx===-1)return;
   var old=sessions[idx];
-  var hasChanged=old.date!==date||old.time!==time||old.timeEnd!==timeEnd||old.lieu!==lieu;
+  var applyFollowing=false;
+  if(seriesKey(old)){
+    applyFollowing=confirm("Ce cours est récurrent.\n\nOK  =  appliquer les changements (horaire, lieu, type, participants) à CE cours ET aux cours suivants de la série\nAnnuler  =  modifier SEULEMENT ce cours-ci");
+  }
+  var thisChanged=old.date!==date||old.time!==time||old.timeEnd!==timeEnd||old.lieu!==lieu;
   sessions[idx]=Object.assign({},old,{type:type,maxParticipants:max,date:date,time:time,timeEnd:timeEnd,lieu:lieu,gmaps:gmaps});
+  var affected=[{s:sessions[idx],changed:thisChanged}];
+  if(applyFollowing){
+    var key=seriesKey(old);
+    sessions.forEach(function(x,i){
+      if(i!==idx && seriesKey(x)===key && x.date>=old.date){
+        var chg=x.time!==time||x.timeEnd!==timeEnd||x.lieu!==lieu;
+        sessions[i]=Object.assign({},x,{type:type,maxParticipants:max,time:time,timeEnd:timeEnd,lieu:lieu,gmaps:gmaps});
+        affected.push({s:sessions[i],changed:chg});
+      }
+    });
+  }
   saveSessions();
   closeEditModalDirect();
-  showToast('Session modifiée !');
-  var regs=sessions[idx].registrations.filter(function(r){return r.email&&r.email!=='x@x.fr';});
-  if(hasChanged&&regs.length>0){
-    sendInfoMail(sessions[idx],'modification','📅 '+parseDate(date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+'\n⏰ '+time+(timeEnd?' – '+timeEnd:'')+'\n📍 '+lieu);
-  }
+  showToast(affected.length>1?(affected.length+' séances modifiées !'):'Session modifiée !');
+  affected.forEach(function(a){
+    var regs=a.s.registrations.filter(function(r){return r.email&&r.email!=='x@x.fr';});
+    if(a.changed&&regs.length>0){
+      sendInfoMail(a.s,'modification','📅 '+parseDate(a.s.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+'\n⏰ '+time+(timeEnd?' – '+timeEnd:'')+'\n📍 '+lieu);
+    }
+  });
 }
 
 
