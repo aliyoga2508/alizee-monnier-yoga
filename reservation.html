@@ -278,6 +278,30 @@ const sessionsRef = db.ref('sessions');
 
 
 let sessions = [];
+
+/* ─── Vue filtrée par studio (ex : reservation.html?studio=pure-vitality) ───
+   Sans paramètre, le calendrier affiche TOUTES les séances (comportement normal). */
+var VIEW_FILTER = (new URLSearchParams(location.search).get('studio')||'').trim().toLowerCase().replace(/-/g,' ');
+function visibleSessions(){
+  if(!VIEW_FILTER) return sessions;
+  return sessions.filter(function(s){
+    return ((s.lieu||'')+' '+(s.type||'')).toLowerCase().indexOf(VIEW_FILTER) !== -1;
+  });
+}
+if(VIEW_FILTER){
+  document.addEventListener('DOMContentLoaded', function(){
+    var mb=document.querySelector('.meteo-banner'); if(mb) mb.style.display='none';
+    var label=VIEW_FILTER.replace(/\b\w/g,function(c){return c.toUpperCase();});
+    var cs=document.querySelector('.cal-section');
+    if(cs && cs.parentNode){
+      var b=document.createElement('div');
+      b.style.cssText='text-align:center;margin:1.4rem auto .2rem;color:var(--burgundy);font-size:1.15rem;font-style:italic';
+      b.innerHTML='✨ Créneaux '+label;
+      cs.parentNode.insertBefore(b, cs);
+    }
+  });
+}
+
 let currentDate = new Date();
 let weekStart = getMonday(new Date());
 let adminLoggedIn = false;
@@ -357,7 +381,7 @@ function renderCalendar() {
     cell.className='cal-day'+(ds===today?' today':'');
     var num=document.createElement('div'); num.className='day-num'; num.textContent=d;
     cell.appendChild(num);
-    sessions.filter(function(s){return s.date===ds;}).forEach(function(s){
+    visibleSessions().filter(function(s){return s.date===ds;}).forEach(function(s){
       var chip=document.createElement('div');
       var isFull=s.registrations.length>=s.maxParticipants;
       chip.className='session-chip'+(isFull?' full':'');
@@ -393,7 +417,7 @@ function renderWeek() {
     header.innerHTML='<span style="text-transform:capitalize">'+day.toLocaleDateString('fr-FR',{weekday:'long'})+'</span><span class="week-day-date">'+day.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+'</span>';
     block.appendChild(header);
     var sessDiv=document.createElement('div'); sessDiv.className='week-day-sessions';
-    var daySess=sessions.filter(function(s){return s.date===ds;});
+    var daySess=visibleSessions().filter(function(s){return s.date===ds;});
     if(daySess.length===0){
       var emp=document.createElement('div'); emp.className='week-empty'; emp.textContent='Pas de séance'; sessDiv.appendChild(emp);
     } else {
