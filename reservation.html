@@ -496,9 +496,15 @@ async function submitBooking(id) {
   saveSessions();
   var dateFormatted=parseDate(s.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   var timeStr=s.time+(s.timeEnd?' – '+s.timeEnd:'');
+  // Message adapté selon le type de cours (studio équipé vs plein air à prix libre)
+  var _ctx=((s.lieu||'')+' '+(s.type||'')).toLowerCase();
+  var _isStudio=/pure vitality|la bulle|bulle|studio|argonay|seynod/.test(_ctx);
+  var sessionNote=_isStudio
+    ? 'Le matériel est fourni sur place (tapis, coussins, bolsters) — apporte simplement ta gourde. Le règlement se fait sur place en espèces, ou en ligne.'
+    : "Pense à apporter ton tapis, une tenue confortable et de l'eau. Ce cours fonctionne à prix libre : tu contribues selon tes moyens et ton ressenti.";
   try {
-    await emailjs.send(CONFIG.emailjsServiceId,CONFIG.emailjsTemplateClient,{to_email:email,to_name:prenom+' '+nom,session_type:s.type,session_date:dateFormatted,session_time:timeStr,session_lieu:s.lieu,session_gmaps:s.gmaps||''});
-    await emailjs.send(CONFIG.emailjsServiceId,CONFIG.emailjsTemplateClient,{to_email:CONFIG.ownerEmail,to_name:'Alizée',session_type:'🎉 Nouvelle inscription · '+s.type+' ('+s.registrations.length+'/'+s.maxParticipants+')',session_date:dateFormatted+' à '+timeStr,session_time:'👤 '+prenom+' '+nom,session_lieu:'📧 '+email+' · 📞 '+tel,session_gmaps:s.gmaps||''});
+    await emailjs.send(CONFIG.emailjsServiceId,CONFIG.emailjsTemplateClient,{to_email:email,to_name:prenom+' '+nom,session_type:s.type,session_date:dateFormatted,session_time:timeStr,session_lieu:s.lieu,session_gmaps:s.gmaps||'',session_note:sessionNote});
+    await emailjs.send(CONFIG.emailjsServiceId,CONFIG.emailjsTemplateClient,{to_email:CONFIG.ownerEmail,to_name:'Alizée',session_type:'🎉 Nouvelle inscription · '+s.type+' ('+s.registrations.length+'/'+s.maxParticipants+')',session_date:dateFormatted+' à '+timeStr,session_time:'👤 '+prenom+' '+nom,session_lieu:'📧 '+email+' · 📞 '+tel,session_gmaps:s.gmaps||'',session_note:''});
   } catch(err){console.error('EmailJS:',err);}
   document.getElementById('modal-content').innerHTML='<div class="success-state"><div class="success-icon">🙏</div><h3>Inscription confirmée !</h3><p>Bonjour <strong>'+prenom+'</strong>, ton inscription est bien enregistrée.<br/><br/><strong>'+s.type+'</strong><br/>'+dateFormatted+' à '+timeStr+'<br/>'+s.lieu+'<br/><br/>Un e-mail de confirmation t\'a \u00e9t\u00e9 envoy\u00e9 \u00e0 <strong>'+email+'</strong>.</p><button class="btn-primary" style="margin-top:1.5rem" onclick="closeBookingDirect()">Fermer</button></div>';
 }
