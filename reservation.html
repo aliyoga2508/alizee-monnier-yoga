@@ -543,6 +543,8 @@ function checkAdminLogin() {
 
 
 function setupAdminDelegation(panel) {
+  if (!panel || panel._delegated) return;   // évite d'attacher plusieurs fois le même écouteur
+  panel._delegated = true;
   panel.addEventListener('click', function(e) {
     var editBtn = e.target.closest('.edit-action');
     var delBtn = e.target.closest('.del-action');
@@ -552,7 +554,8 @@ function setupAdminDelegation(panel) {
 }
 function setupBookingDelegation() {
   var mc = document.getElementById('modal-content');
-  if (!mc) return;
+  if (!mc || mc._delegated) return;          // évite les inscriptions multiples
+  mc._delegated = true;
   mc.addEventListener('click', function(e) {
     var btn = e.target.closest('.submit-action');
     if (btn) submitBooking(btn.dataset.id);
