@@ -452,10 +452,12 @@ function renderWeek() {
 }
 
 
+var _isSubmitting=false;
 function openBooking(id) {
   var s=sessions.find(function(x){return x.id===id;});
   if(!s)return;
   if(isPastSession(s)){ showToast('Cette séance est déjà passée','error'); return; }
+  _isSubmitting=false;
   var isFull=s.registrations.length>=s.maxParticipants;
   var pct=Math.round(s.registrations.length/s.maxParticipants*100);
   var fillClass=pct>=100?'danger':pct>=70?'warning':'';
@@ -492,6 +494,8 @@ async function submitBooking(id) {
   btn.disabled=true; btn.textContent='Inscription en cours…';
   var s=sessions.find(function(x){return x.id===id;});
   if(!s||s.registrations.length>=s.maxParticipants){showToast('Session complète','error');return;}
+  if(_isSubmitting) return;      // verrou : une seule inscription par ouverture
+  _isSubmitting=true;
   s.registrations.push({nom:nom,prenom:prenom,email:email,tel:tel});
   saveSessions();
   var dateFormatted=parseDate(s.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
