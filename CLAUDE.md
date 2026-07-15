@@ -11,7 +11,7 @@
 
 ## Le site
 - En ligne : **https://aliyoga.fr** (+ `aliyoga.ch` qui redirige). Hébergé sur **GitHub Pages**, dépôt **`aliyoga2508/alizee-monnier-yoga`**. Domaines chez **Infomaniak**.
-- **Vitrine** : `Website/site-vitrine/index.html` (présentation, 4 pratiques, prix libre). Section témoignages **masquée** (à réactiver avec de vrais avis).
+- **Vitrine** : `Website/site-vitrine/index.html` (présentation, 4 pratiques, prix libre). Section témoignages **active** (4 avis réels recueillis par formulaire, accord de publication).
 - **Réservation** : `reservation.html` = calendrier maison (Google Forms → Google Sheets → Apps Script → Notion ; base "Planning des séances", intégration "Form counter"). Notice : `Website/notice-seances-yoga.md`.
 - **Charte** : crème `#ebe1d0` · bordeaux `#8f4333` · vert `#687257` · gris `#383837` · police **Fraunces**. Logo éléphant au cœur (`BRAND ASSETS/alizee_logo_2a.png` bordeaux, `_3a.png` vert).
 - Contact : **aliyoga2508@gmail.com** · 07 67 95 76 68.
@@ -25,7 +25,7 @@
 - Photos téléphone : attention à l'**orientation EXIF** (re-encoder dans un bitmap neuf pour éviter l'effet "couché" en ligne).
 
 ## Reste à faire
-- Ajouter de vrais témoignages (idéalement avis Google) → réactiver la section.
+- Recueillir davantage d'avis (idéalement avis Google) pour enrichir la section témoignages (déjà active avec 4 avis).
 - Brancher le bouton « Contribuer » (lien Stripe) une fois la **micro-entreprise** créée (SIRET requis).
 - Chantiers ouverts : micro-entreprise, Google Business Profile, lancement Instagram (guides dans `01_Reseaux-sociaux/`).
 
