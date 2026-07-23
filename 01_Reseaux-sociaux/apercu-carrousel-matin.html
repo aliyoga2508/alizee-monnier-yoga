@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Aperçu carrousel « Pratiquer le matin » — Aliyoga</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Sacramento&display=swap" rel="stylesheet">
+<style>
+  :root{--creme:#ebe1d0;--bordeaux:#8f4333;--vert:#687257;--gris:#383837;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:#cfc3ad;font-family:'Fraunces',serif;padding:34px;}
+  h2.note{font-family:system-ui,sans-serif;font-size:15px;color:#3a3a3a;text-align:center;font-weight:600;max-width:900px;margin:0 auto 26px;line-height:1.5;}
+  .grid{display:flex;flex-wrap:wrap;gap:26px;justify-content:center;align-items:flex-start;}
+  .wrap{display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .cap{font-family:system-ui,sans-serif;font-size:12px;color:#444;font-weight:600;}
+
+  /* slide 1080x1350 -> échelle 0.27 = 292x365 */
+  .slide{position:relative;width:292px;height:365px;overflow:hidden;border-radius:14px;
+         box-shadow:0 8px 24px rgba(0,0,0,.18);}
+  .logoTL{position:absolute;top:16px;left:16px;width:44px;z-index:5;}
+  .logoTL.light{filter:brightness(0) saturate(100%) invert(93%) sepia(9%) saturate(420%) hue-rotate(343deg) brightness(97%);}
+
+  /* --- slides PHOTO (cover/CTA) --- */
+  .photo{background-size:cover;background-position:center;}
+  .photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.30));}
+  .arc{position:absolute;top:20px;left:0;width:100%;z-index:4;}
+  .arc svg{width:100%;height:130px;overflow:visible;}
+  .subPhoto{position:absolute;bottom:26px;width:100%;text-align:center;z-index:4;
+            font-family:'Sacramento',cursive;font-size:22px;color:var(--creme);
+            text-shadow:0 1px 6px rgba(0,0,0,.5);}
+
+  /* --- slides CREME --- */
+  .creme{background:var(--creme);display:flex;flex-direction:column;align-items:center;
+         justify-content:center;text-align:center;padding:34px 24px;}
+  .creme .wm{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:76%;opacity:.09;pointer-events:none;}
+  .creme .inner{position:relative;z-index:2;}
+  .creme .title{font-size:20px;font-weight:600;color:var(--bordeaux);line-height:1.15;margin:0 0 4px;}
+  .creme .sub{font-family:'Sacramento',cursive;font-size:20px;color:var(--bordeaux);margin:0 0 12px;}
+  .creme .div{width:38px;height:2px;background:var(--vert);opacity:.7;margin:0 auto 12px;}
+  .creme .body{font-size:11.5px;line-height:1.5;color:var(--gris);margin:0;}
+  .creme .logoB{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);width:40px;opacity:.55;}
+
+  /* --- slide CTA bordeaux --- */
+  .cta{background:var(--bordeaux);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px 24px;color:var(--creme);}
+  .cta .title{font-size:22px;font-weight:600;margin:6px 0 2px;}
+  .cta .sub{font-family:'Sacramento',cursive;font-size:22px;margin:0 0 14px;}
+  .cta .logoBig{width:96px;filter:brightness(0) saturate(100%) invert(93%) sepia(9%) saturate(420%) hue-rotate(343deg) brightness(97%);margin:6px 0 12px;}
+  .cta .body{font-size:12px;line-height:1.5;max-width:210px;margin:0;}
+</style>
+</head>
+<body>
+  <h2 class="note">Aperçu du carrousel « Pourquoi pratiquer le matin » — 6 slides. Photo + rubans courbés (slides photo), fond crème + filigrane + trait vert (slides texte), CTA bordeaux + gros logo. À reproduire dans Canva.</h2>
+
+  <div class="grid">
+
+    <!-- 1 COUVERTURE -->
+    <div class="wrap">
+      <div class="slide photo" style="background-image:url('Photos/Officielles/Photo%20yoga/YogaAli_RobinM-02151.jpg')">
+        <img class="logoTL light" src="../BRAND ASSETS/alizee_logo_2a.png">
+        <div class="arc">
+          <svg viewBox="0 0 292 130">
+            <path id="a1" d="M 34,116 Q 146,34 258,116" fill="none" stroke="#8f4333" stroke-width="30" stroke-linecap="round"/>
+            <text font-family="Fraunces" font-weight="600" font-size="19" fill="#ebe1d0" text-anchor="middle">
+              <textPath href="#a1" startOffset="50%">Pourquoi pratiquer le matin ? 🌅</textPath>
+            </text>
+          </svg>
+        </div>
+        <div class="subPhoto">le secret des yogis</div>
+      </div>
+      <div class="cap">1 · Couverture</div>
+    </div>
+
+    <!-- 2 -->
+    <div class="wrap">
+      <div class="slide creme">
+        <img class="logoTL" src="../BRAND ASSETS/alizee_logo_2a.png">
+        <img class="wm" src="../BRAND ASSETS/alizee_logo_2a.png">
+        <div class="inner">
+          <div class="title">Avant que le monde s'éveille</div>
+          <div class="sub">le silence du petit matin</div>
+          <div class="div"></div>
+          <p class="body">Traditionnellement, le yoga se pratique tôt, avant le lever du soleil — quand le monde est encore endormi. Tout est au ralenti, et on le ressent jusque dans l'énergie : un calme, un silence rares, propices à la méditation.</p>
+        </div>
+        <img class="logoB" src="../BRAND ASSETS/alizee_logo_2a.png">
+      </div>
+      <div class="cap">2 · La tradition</div>
+    </div>
+
+    <!-- 3 -->
+    <div class="wrap">
+      <div class="slide creme">
+        <img class="logoTL" src="../BRAND ASSETS/alizee_logo_2a.png">
+        <img class="wm" src="../BRAND ASSETS/alizee_logo_2a.png">
+        <div class="inner">
+          <div class="title">On pratique aussi pour les autres</div>
+          <div class="sub">bien au-delà de soi</div>
+          <div class="div"></div>
+          <p class="body">Le yoga ne se pratique pas seulement pour soi, mais aussi pour les autres, pour la conscience universelle. Avant de s'offrir au monde, on cultive d'abord sa propre énergie — pour ne pas transmettre nos ombres, et n'offrir que notre lumière.</p>
+        </div>
+        <img class="logoB" src="../BRAND ASSETS/alizee_logo_2a.png">
+      </div>
+      <div class="cap">3 · Pour les autres</div>
+    </div>
+
+    <!-- 4 -->
+    <div class="wrap">
+      <div class="slide creme">
+        <img class="logoTL" src="../BRAND ASSETS/alizee_logo_2a.png">
+        <img class="wm" src="../BRAND ASSETS/alizee_logo_2a.png">
+        <div class="inner">
+          <div class="title">Toute la journée s'en trouve transformée</div>
+          <div class="sub">ancrée, déposée, calme</div>
+          <div class="div"></div>
+          <p class="body">Quand le soleil se lève, on est déjà prêt·e : ancré·e, apaisé·e, aligné·e. Les bienfaits infusent chaque heure qui suit — plus de patience, de douceur, de compassion. Nos interactions se transforment, et notre monde intérieur avec elles.</p>
+        </div>
+        <img class="logoB" src="../BRAND ASSETS/alizee_logo_2a.png">
+      </div>
+      <div class="cap">4 · La journée</div>
+    </div>
+
+    <!-- 5 -->
+    <div class="wrap">
+      <div class="slide creme">
+        <img class="logoTL" src="../BRAND ASSETS/alizee_logo_2a.png">
+        <img class="wm" src="../BRAND ASSETS/alizee_logo_2a.png">
+        <div class="inner">
+          <div class="title">Un égrégore magique</div>
+          <div class="sub">entre 5h et 7h30</div>
+          <div class="div"></div>
+          <p class="body">À ces heures, en France, tant de yogis pratiquent au même moment qu'une énergie commune se crée. Un élan collectif, une vibration partagée — qui rend la méditation encore plus profonde et le silence plus habité. 🌿</p>
+        </div>
+        <img class="logoB" src="../BRAND ASSETS/alizee_logo_2a.png">
+      </div>
+      <div class="cap">5 · L'égrégore</div>
+    </div>
+
+    <!-- 6 CTA -->
+    <div class="wrap">
+      <div class="slide cta">
+        <div class="title">Et si tu essayais ? 🌅</div>
+        <div class="sub">au lever du jour</div>
+        <img class="logoBig" src="../BRAND ASSETS/alizee_logo_2a.png">
+        <p class="body">Un moment de silence, rien qu'à toi, avant que le monde ne s'active. Le plus beau cadeau à s'offrir.</p>
+      </div>
+      <div class="cap">6 · CTA</div>
+    </div>
+
+  </div>
+</body>
+</html>
