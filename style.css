@@ -52,6 +52,8 @@ header{background:var(--cream);position:sticky;top:0;z-index:100;border-bottom:1
 .dropdown-menu a:hover{background:rgba(214,201,179,.55);color:var(--burgundy)}
 .dropdown-menu .soon{opacity:.5;cursor:default;font-style:italic}
 .dropdown-menu .soon:hover{background:transparent;color:var(--grey)}
+.nav-links .dropdown>.drop-link{text-decoration:none;font-size:.95rem;color:var(--grey);opacity:.85;transition:opacity .2s;cursor:pointer}
+.nav-links .dropdown>.drop-link:hover{opacity:1;color:var(--burgundy)}
 
 /* ─── Hero page d'accueil ─── */
 .hero{position:relative;text-align:center;padding:6.5rem 1.5rem 6rem;color:var(--cream);
