@@ -291,24 +291,31 @@ const sessionsRef = db.ref('sessions');
 
 let sessions = [];
 
-/* ─── Vue filtrée par studio (ex : reservation.html?studio=pure-vitality) ───
-   Sans paramètre, le calendrier affiche TOUTES les séances (comportement normal). */
-var VIEW_FILTER = (new URLSearchParams(location.search).get('studio')||'').trim().toLowerCase().replace(/-/g,' ');
+/* ─── Vue filtrée par lieu (ex : reservation.html?studio=la-bulle) ───
+   Sans paramètre, le calendrier affiche TOUTES les séances (lac + La Bulle + Pure Vitality). */
+var VIEW_PARAM = (new URLSearchParams(location.search).get('studio')||'').trim().toLowerCase().replace(/-/g,' ');
+var VIEW_DEFS = {
+  'lac':           {label:'Cours au lac',  words:['lac','plein air','extérieur','exterieur','pâquier','paquier','albigny','sevrier']},
+  'la bulle':      {label:'La Bulle',      words:['bulle','argonay']},
+  'pure vitality': {label:'Pure Vitality', words:['pure vitality','vitality','seynod']}
+};
+var VIEW = VIEW_DEFS[VIEW_PARAM] || (VIEW_PARAM ? {label:VIEW_PARAM.replace(/\b\w/g,function(c){return c.toUpperCase();}), words:[VIEW_PARAM]} : null);
+var VIEW_FILTER = VIEW ? VIEW_PARAM : '';
 function visibleSessions(){
-  if(!VIEW_FILTER) return sessions;
+  if(!VIEW) return sessions;
   return sessions.filter(function(s){
-    return ((s.lieu||'')+' '+(s.type||'')).toLowerCase().indexOf(VIEW_FILTER) !== -1;
+    var ctx=((s.lieu||'')+' '+(s.type||'')).toLowerCase();
+    return VIEW.words.some(function(w){ return ctx.indexOf(w)!==-1; });
   });
 }
-if(VIEW_FILTER){
+if(VIEW){
   document.addEventListener('DOMContentLoaded', function(){
-    var mb=document.querySelector('.meteo-banner'); if(mb) mb.style.display='none';
-    var label=VIEW_FILTER.replace(/\b\w/g,function(c){return c.toUpperCase();});
+    if(VIEW_PARAM!=='lac'){ var mb=document.querySelector('.meteo-banner'); if(mb) mb.style.display='none'; }
     var cs=document.querySelector('.cal-section');
     if(cs && cs.parentNode){
       var b=document.createElement('div');
       b.style.cssText='text-align:center;margin:1.4rem auto .2rem;color:var(--burgundy);font-size:1.15rem;font-style:italic';
-      b.innerHTML='✨ Créneaux '+label;
+      b.innerHTML='✨ Créneaux · '+VIEW.label+' &nbsp;<a href="reservation.html" style="font-size:.85rem;font-style:normal;color:var(--burgundy);text-decoration:underline;opacity:.8">Voir tous les créneaux</a>';
       cs.parentNode.insertBefore(b, cs);
     }
   });
