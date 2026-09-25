@@ -379,6 +379,8 @@ function changeMonth(dir) {
 /* ─── Séances passées + séries récurrentes ─── */
 function sessionStart(s){ return new Date((s.date||'1970-01-01')+'T'+(s.time||'00:00')); }
 function isPastSession(s){ return sessionStart(s).getTime() < Date.now(); }
+var BOOKING_CUTOFF_MS = 60*60*1000; // inscriptions en ligne closes 1 h avant le début
+function isBookingClosed(s){ return !isPastSession(s) && (sessionStart(s).getTime() - Date.now()) < BOOKING_CUTOFF_MS; }
 function seriesKey(s){ var i=(s.id||'').indexOf('_'); return i>0 ? s.id.slice(0,i) : null; }
 function followingInSeries(s){
   var key=seriesKey(s); if(!key) return [s];
@@ -456,7 +458,7 @@ function renderWeek() {
         var card=document.createElement('div');
         card.className='week-session-card'+(isFull?' full':'')+(isPast?' past':'');
         var timeStr=s.time+(s.timeEnd?' – '+s.timeEnd:'');
-        card.innerHTML='<div class="wsc-type">'+s.type+'</div><div class="wsc-meta">⏰ '+timeStr+' · 📍 '+s.lieu+' · '+s.registrations.length+'/'+s.maxParticipants+(isFull?' · <strong>Complet</strong>':'')+(isPast?' · <em>Passé</em>':'')+'</div>';
+        card.innerHTML='<div class="wsc-type">'+s.type+'</div><div class="wsc-meta">⏰ '+timeStr+' · 📍 '+s.lieu+' · '+s.registrations.length+'/'+s.maxParticipants+(isFull?' · <strong>Complet</strong>':'')+(isPast?' · <em>Passé</em>':'')+(isBookingClosed(s)&&!isFull?' · <em>Inscription par téléphone</em>':'')+'</div>';
         if(!isFull&&!isPast)(function(id){card.onclick=function(){openBooking(id);};})(s.id);
         sessDiv.appendChild(card);
       });
@@ -485,6 +487,8 @@ function openBooking(id) {
   html+='<div class="spots-text">'+s.registrations.length+' / '+s.maxParticipants+' participant'+(s.registrations.length>1?'s':'')+' inscrit'+(s.registrations.length>1?'s':'')+'</div>';
   if(isFull){
     html+='<div class="full-badge">🙏 Cette session est complète</div>';
+  } else if(isBookingClosed(s)){
+    html+='<div class="full-badge" style="line-height:1.6">⏳ Les inscriptions en ligne ferment 1 h avant le début du cours.<br/>Contacte-moi pour savoir s\'il reste une place&nbsp;:<br/><a href="tel:+33767957668" style="color:inherit;font-weight:600">📞 07 67 95 76 68</a> &nbsp;·&nbsp; <a href="mailto:aliyoga2508@gmail.com" style="color:inherit;font-weight:600">✉️ aliyoga2508@gmail.com</a></div>';
   } else {
     html+='<div class="form-row"><div class="form-group"><label>Prénom *</label><input type="text" id="f-prenom" placeholder="Marie"/></div><div class="form-group"><label>Nom *</label><input type="text" id="f-nom" placeholder="Dupont"/></div></div>';
     html+='<div class="form-group"><label>Adresse e-mail *</label><input type="email" id="f-email" placeholder="marie@exemple.fr"/></div>';
@@ -505,6 +509,8 @@ async function submitBooking(id) {
   var tel=document.getElementById('f-tel').value.trim();
   if(!prenom||!nom||!email||!tel){showToast('Merci de remplir tous les champs','error');return;}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showToast('E-mail invalide','error');return;}
+  var _s0=sessions.find(function(x){return x.id===id;});
+  if(_s0&&isBookingClosed(_s0)){showToast('Les inscriptions en ligne sont closes 1 h avant le cours — contacte-moi directement','error');return;}
   var btn=document.getElementById('submit-btn');
   btn.disabled=true; btn.textContent='Inscription en cours…';
   var s=sessions.find(function(x){return x.id===id;});
@@ -582,8 +588,9 @@ function setupBookingDelegation() {
 }
 function renderAdminPanel(panel) {
   var sorted=sessions.slice().sort(function(a,b){return a.date.localeCompare(b.date)||a.time.localeCompare(b.time);});
+  var upcoming=sorted.filter(function(s){return !isPastSession(s);}); // les séances passées restent dans le fichier clients, pas dans la liste
   var listHTML='';
-  sorted.forEach(function(s){
+  upcoming.forEach(function(s){
     var realRegs=s.registrations.filter(function(r){return r.email!=='x@x.fr';});
     var timeStr=s.time+(s.timeEnd?' – '+s.timeEnd:'');
     var dateStr=parseDate(s.date).toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});
@@ -616,7 +623,7 @@ function renderAdminPanel(panel) {
     var dStr=parseDate(s.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
     clientsHTML+='<div style="margin-top:1.1rem;margin-bottom:.3rem;font-weight:700;color:var(--burgundy);font-size:.9rem;text-transform:capitalize;border-bottom:2px solid var(--cream-dark);padding-bottom:.2rem">'+dStr+' · '+_esc(s.type)+' <span style="font-weight:400;opacity:.6">('+regsIdx.length+')</span></div>';
     var moveOpts='<option value="">↪ déplacer…</option>';
-    sorted.forEach(function(t){ if(t.id!==s.id){ var td=parseDate(t.date).toLocaleDateString('fr-FR',{day:'numeric',month:'short'}); moveOpts+='<option value="'+t.id+'">'+td+' · '+_esc(t.type)+'</option>'; }});
+    upcoming.forEach(function(t){ if(t.id!==s.id){ var td=parseDate(t.date).toLocaleDateString('fr-FR',{day:'numeric',month:'short'}); moveOpts+='<option value="'+t.id+'">'+td+' · '+_esc(t.type)+'</option>'; }});
     regsIdx.forEach(function(o){
       var r=o.r, idx=o.idx, st=r.statut||'';
       var stLabel= st==='present'?'✅ Présent': st==='absent'?'❌ Absent':'• Inscrit';
@@ -668,9 +675,9 @@ function renderAdminPanel(panel) {
     +'<button class="btn-primary" onclick="exportClients()" style="margin-top:1rem">⬇️ Exporter (CSV pour Google Sheets / Excel)</button>'
     +'</div>'
     +'<div class="admin-section">'
-    +'<h4>Sessions à venir ('+sorted.length+')</h4>'
-    +(sorted.length>0?'<p style="font-size:.78rem;opacity:.65;margin-bottom:.5rem">Coche des séances pour en supprimer plusieurs d&#39;un coup.</p><button onclick="deleteSelectedSessions()" style="background:var(--burgundy);color:var(--cream);border:none;border-radius:2rem;padding:.5rem 1.2rem;font-size:.85rem;cursor:pointer;font-family:var(--font);margin-bottom:.8rem">🗑 Supprimer la sélection</button>':'')
-    +(sorted.length===0?'<p style="font-size:.85rem;opacity:.6">Aucune session.</p>':listHTML)
+    +'<h4>Sessions à venir ('+upcoming.length+')</h4>'
+    +(upcoming.length>0?'<p style="font-size:.78rem;opacity:.65;margin-bottom:.5rem">Coche des séances pour en supprimer plusieurs d&#39;un coup.</p><button onclick="deleteSelectedSessions()" style="background:var(--burgundy);color:var(--cream);border:none;border-radius:2rem;padding:.5rem 1.2rem;font-size:.85rem;cursor:pointer;font-family:var(--font);margin-bottom:.8rem">🗑 Supprimer la sélection</button>':'')
+    +(upcoming.length===0?'<p style="font-size:.85rem;opacity:.6">Aucune session.</p>':listHTML)
     +'</div>'
     +'<button onclick="adminLoggedIn=false;renderAdminContent()" style="background:none;border:none;color:var(--grey);opacity:.5;cursor:pointer;font-family:var(--font);font-size:.85rem;padding:.5rem 0">Se déconnecter</button>';
   setupAdminDelegation(panel);
