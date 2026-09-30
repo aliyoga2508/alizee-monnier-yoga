@@ -350,15 +350,17 @@ function _refresh(){
 
 /* Vue PUBLIQUE : lit le résumé /public (dates, lieu, places — SANS coordonnées).
    Repli temporaire sur /sessions tant que /public n'existe pas encore (avant migration). */
+function _loadPublicFallback(){
+  // Repli : lecture directe de /sessions (fonctionne tant que les règles ne sont pas verrouillées)
+  sessionsRef.once('value').then(function(sn){ if(!adminLoggedIn){ sessions=_normalize(sn.val()); _refresh(); } }).catch(function(){ if(!adminLoggedIn){ sessions=[]; _refresh(); } });
+}
 function initPublicListener() {
   publicRef.on('value', function(snapshot){
     if(adminLoggedIn) return;                 // en mode admin, on garde les données complètes
     var data = snapshot.val();
     if(data){ sessions = _normalize(data); _refresh(); }
-    else {
-      sessionsRef.once('value').then(function(sn){ if(!adminLoggedIn){ sessions=_normalize(sn.val()); _refresh(); } }).catch(function(){ sessions=[]; _refresh(); });
-    }
-  });
+    else { _loadPublicFallback(); }           // /public pas encore créé → repli
+  }, function(){ _loadPublicFallback(); });    // lecture de /public refusée par les règles → repli
 }
 
 /* Vue ADMIN (connectée) : lit les données complètes /sessions (avec coordonnées). */
