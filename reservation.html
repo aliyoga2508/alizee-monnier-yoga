@@ -16,6 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&display=swap" rel="stylesheet"/>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -267,7 +268,6 @@ footer a{color:var(--cream);text-decoration:none;border-bottom:1px solid rgba(23
 <script>
 
 const CONFIG = {
-  adminPassword: 'Plume3110',
   ownerEmail: 'aliyoga2508@gmail.com',
   emailjsPublicKey: 'iiD6Oq4uKVfep4ig5',
   emailjsServiceId: 'service_Alizeeyoga',
@@ -286,7 +286,10 @@ firebase.initializeApp({
   appId: "1:110494249497:web:8a52951b270e7bfdc1b088"
 });
 const db = firebase.database();
-const sessionsRef = db.ref('sessions');
+const sessionsRef = db.ref('sessions');   // données complètes AVEC coordonnées — lecture/écriture réservées à l'admin connectée
+const publicRef  = db.ref('public');       // résumé public SANS coordonnées (dates, lieu, places prises) — lisible par tous
+const requestsRef = db.ref('requests');    // boîte de réception des inscriptions — création possible par tous, lecture réservée à l'admin
+const auth = firebase.auth();
 
 
 let sessions = [];
@@ -327,34 +330,92 @@ let adminLoggedIn = false;
 let editingSessionId = null;
 
 
-function initFirebaseListener() {
-  sessionsRef.on('value', function(snapshot) {
+/* ─── Compteur de places : marche pour le public (taken) ET l'admin (registrations) ─── */
+function regCount(s){
+  if(s && Array.isArray(s.registrations)) return s.registrations.filter(function(r){return r&&r.email&&r.email!=='x@x.fr';}).length;
+  return (s && typeof s.taken==='number') ? s.taken : 0;
+}
+function _normalize(data){
+  if(!data) return [];
+  return Object.values(data).filter(function(s){ return s && s.date && s.time; }).map(function(s){
+    if(s.registrations && !Array.isArray(s.registrations)) s.registrations = Object.values(s.registrations);
+    return s;
+  }).sort(function(a,b){ return a.date.localeCompare(b.date) || a.time.localeCompare(b.time); });
+}
+function _refresh(){
+  renderCalendar();
+  renderWeek();
+  if (adminLoggedIn) { var p=document.getElementById('admin-content'); if(p) renderAdminPanel(p); }
+}
+
+/* Vue PUBLIQUE : lit le résumé /public (dates, lieu, places — SANS coordonnées).
+   Repli temporaire sur /sessions tant que /public n'existe pas encore (avant migration). */
+function initPublicListener() {
+  publicRef.on('value', function(snapshot){
+    if(adminLoggedIn) return;                 // en mode admin, on garde les données complètes
     var data = snapshot.val();
-    if (data) {
-      sessions = Object.values(data).map(function(s){
-        if(!s.registrations) s.registrations = [];
-        if(!Array.isArray(s.registrations)) s.registrations = Object.values(s.registrations);
-        return s;
-      }).sort(function(a,b){
-        return a.date.localeCompare(b.date) || a.time.localeCompare(b.time);
-      });
-    } else {
-      sessions = [];
-    }
-    renderCalendar();
-    renderWeek();
-    if (adminLoggedIn) {
-      var panel = document.getElementById('admin-content');
-      if (panel) renderAdminPanel(panel);
+    if(data){ sessions = _normalize(data); _refresh(); }
+    else {
+      sessionsRef.once('value').then(function(sn){ if(!adminLoggedIn){ sessions=_normalize(sn.val()); _refresh(); } }).catch(function(){ sessions=[]; _refresh(); });
     }
   });
 }
 
+/* Vue ADMIN (connectée) : lit les données complètes /sessions (avec coordonnées). */
+function startAdminData(){
+  publicRef.off();
+  sessionsRef.on('value', function(snapshot){
+    sessions = _normalize(snapshot.val());
+    syncPublic();                             // (re)crée et garde à jour le résumé public
+    importRequests();                         // intègre les inscriptions reçues
+    _refresh();
+  });
+}
+function stopAdminData(){
+  sessionsRef.off();
+  sessions = [];
+  initPublicListener();
+}
+
+/* Réécrit /sessions (complet, privé) ET met à jour le résumé public /public. */
 function saveSessions() {
   var obj = {};
   sessions.forEach(function(s){ obj[s.id] = s; });
   sessionsRef.set(obj);
+  syncPublic();
 }
+function syncPublic(){
+  var obj = {};
+  sessions.forEach(function(s){
+    obj[s.id] = {id:s.id,date:s.date,time:s.time,timeEnd:s.timeEnd||'',lieu:s.lieu||'',gmaps:s.gmaps||'',type:s.type||'',maxParticipants:s.maxParticipants||0,taken:regCount(s)};
+  });
+  publicRef.set(obj);
+}
+
+/* Récupère les inscriptions déposées par le public dans /requests et les intègre aux sessions. */
+var _importing=false;
+function importRequests(){
+  if(_importing) return;
+  requestsRef.once('value').then(function(sn){
+    var reqs = sn.val(); if(!reqs) return;
+    _importing=true;
+    var changed=false, updates={};
+    Object.keys(reqs).forEach(function(key){
+      var r=reqs[key]; updates['requests/'+key]=null;
+      if(!r||!r.sid) return;
+      var s=sessions.find(function(x){return x.id===r.sid;});
+      if(s){
+        if(!Array.isArray(s.registrations)) s.registrations=[];
+        var dup=s.registrations.some(function(x){return x&&x.email===r.email;});
+        if(!dup){ s.registrations.push({prenom:r.prenom,nom:r.nom,email:r.email,tel:r.tel}); changed=true; }
+      }
+    });
+    db.ref().update(updates);
+    if(changed) saveSessions(); else syncPublic();
+    _importing=false;
+  }).catch(function(){ _importing=false; });
+}
+function logoutAdmin(){ auth.signOut(); }
 
 
 var FR_MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
@@ -413,11 +474,11 @@ function renderCalendar() {
     cell.appendChild(num);
     visibleSessions().filter(function(s){return s.date===ds;}).forEach(function(s){
       var chip=document.createElement('div');
-      var isFull=s.registrations.length>=s.maxParticipants;
+      var isFull=regCount(s)>=s.maxParticipants;
       var isPast=isPastSession(s);
       chip.className='session-chip'+(isFull?' full':'')+(isPast?' past':'');
       var timeStr=s.time+(s.timeEnd?'–'+s.timeEnd:'');
-      chip.innerHTML='<span class="chip-time">'+timeStr+' · '+s.type+'</span><span class="chip-spots">'+s.registrations.length+'/'+s.maxParticipants+'</span>';
+      chip.innerHTML='<span class="chip-time">'+timeStr+' · '+s.type+'</span><span class="chip-spots">'+regCount(s)+'/'+s.maxParticipants+'</span>';
       if(!isFull&&!isPast)(function(id){chip.onclick=function(){openBooking(id);};})(s.id);
       cell.appendChild(chip);
     });
@@ -453,12 +514,12 @@ function renderWeek() {
       var emp=document.createElement('div'); emp.className='week-empty'; emp.textContent='Pas de séance'; sessDiv.appendChild(emp);
     } else {
       daySess.forEach(function(s){
-        var isFull=s.registrations.length>=s.maxParticipants;
+        var isFull=regCount(s)>=s.maxParticipants;
         var isPast=isPastSession(s);
         var card=document.createElement('div');
         card.className='week-session-card'+(isFull?' full':'')+(isPast?' past':'');
         var timeStr=s.time+(s.timeEnd?' – '+s.timeEnd:'');
-        card.innerHTML='<div class="wsc-type">'+s.type+'</div><div class="wsc-meta">⏰ '+timeStr+' · 📍 '+s.lieu+' · '+s.registrations.length+'/'+s.maxParticipants+(isFull?' · <strong>Complet</strong>':'')+(isPast?' · <em>Passé</em>':'')+(isBookingClosed(s)&&!isFull?' · <em>Inscription par téléphone</em>':'')+'</div>';
+        card.innerHTML='<div class="wsc-type">'+s.type+'</div><div class="wsc-meta">⏰ '+timeStr+' · 📍 '+s.lieu+' · '+regCount(s)+'/'+s.maxParticipants+(isFull?' · <strong>Complet</strong>':'')+(isPast?' · <em>Passé</em>':'')+(isBookingClosed(s)&&!isFull?' · <em>Inscription par téléphone</em>':'')+'</div>';
         if(!isFull&&!isPast)(function(id){card.onclick=function(){openBooking(id);};})(s.id);
         sessDiv.appendChild(card);
       });
@@ -475,8 +536,8 @@ function openBooking(id) {
   if(!s)return;
   if(isPastSession(s)){ showToast('Cette séance est déjà passée','error'); return; }
   _isSubmitting=false;
-  var isFull=s.registrations.length>=s.maxParticipants;
-  var pct=Math.round(s.registrations.length/s.maxParticipants*100);
+  var isFull=regCount(s)>=s.maxParticipants;
+  var pct=Math.round(regCount(s)/s.maxParticipants*100);
   var fillClass=pct>=100?'danger':pct>=70?'warning':'';
   var dateFormatted=parseDate(s.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   var timeStr=s.time+(s.timeEnd?' – '+s.timeEnd:'');
@@ -484,7 +545,7 @@ function openBooking(id) {
   var html='<h3>'+s.type+'</h3>';
   html+='<div class="modal-meta"><span class="meta-tag">📅 '+dateFormatted+'</span><span class="meta-tag">⏰ '+timeStr+'</span><span class="meta-tag">📍 '+s.lieu+'</span>'+gmapsBtn+'</div>';
   html+='<div class="spots-bar"><div class="spots-fill '+fillClass+'" style="width:'+Math.min(pct,100)+'%"></div></div>';
-  html+='<div class="spots-text">'+s.registrations.length+' / '+s.maxParticipants+' participant'+(s.registrations.length>1?'s':'')+' inscrit'+(s.registrations.length>1?'s':'')+'</div>';
+  html+='<div class="spots-text">'+regCount(s)+' / '+s.maxParticipants+' participant'+(regCount(s)>1?'s':'')+' inscrit'+(regCount(s)>1?'s':'')+'</div>';
   if(isFull){
     html+='<div class="full-badge">🙏 Cette session est complète</div>';
   } else if(isBookingClosed(s)){
@@ -514,11 +575,13 @@ async function submitBooking(id) {
   var btn=document.getElementById('submit-btn');
   btn.disabled=true; btn.textContent='Inscription en cours…';
   var s=sessions.find(function(x){return x.id===id;});
-  if(!s||s.registrations.length>=s.maxParticipants){showToast('Session complète','error');return;}
+  if(!s||regCount(s)>=s.maxParticipants){showToast('Session complète','error');return;}
   if(_isSubmitting) return;      // verrou : une seule inscription par ouverture
   _isSubmitting=true;
-  s.registrations.push({nom:nom,prenom:prenom,email:email,tel:tel});
-  saveSessions();
+  // Coordonnées → boîte privée /requests (lisible seulement par l'admin) ; place réservée via le compteur public
+  requestsRef.push({sid:id,prenom:prenom,nom:nom,email:email,tel:tel,ts:Date.now()});
+  publicRef.child(id).child('taken').transaction(function(c){return (c||0)+1;});
+  if(typeof s.taken==='number') s.taken++;
   var dateFormatted=parseDate(s.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   var timeStr=s.time+(s.timeEnd?' – '+s.timeEnd:'');
   // Message adapté selon le type de cours (studio équipé vs plein air à prix libre)
@@ -529,7 +592,7 @@ async function submitBooking(id) {
     : "Pense à apporter ton tapis, une tenue confortable et de l'eau. Ce cours fonctionne à prix libre : tu contribues selon tes moyens et ton ressenti.";
   try {
     await emailjs.send(CONFIG.emailjsServiceId,CONFIG.emailjsTemplateClient,{to_email:email,to_name:prenom+' '+nom,session_type:s.type,session_date:dateFormatted,session_time:timeStr,session_lieu:s.lieu,session_gmaps:s.gmaps||'',session_note:sessionNote});
-    await emailjs.send(CONFIG.emailjsServiceId,CONFIG.emailjsTemplateClient,{to_email:CONFIG.ownerEmail,to_name:'Alizée',session_type:'🎉 Nouvelle inscription · '+s.type+' ('+s.registrations.length+'/'+s.maxParticipants+')',session_date:dateFormatted+' à '+timeStr,session_time:'👤 '+prenom+' '+nom,session_lieu:'📧 '+email+' · 📞 '+tel,session_gmaps:s.gmaps||'',session_note:''});
+    await emailjs.send(CONFIG.emailjsServiceId,CONFIG.emailjsTemplateClient,{to_email:CONFIG.ownerEmail,to_name:'Alizée',session_type:'🎉 Nouvelle inscription · '+s.type+' ('+regCount(s)+'/'+s.maxParticipants+')',session_date:dateFormatted+' à '+timeStr,session_time:'👤 '+prenom+' '+nom,session_lieu:'📧 '+email+' · 📞 '+tel,session_gmaps:s.gmaps||'',session_note:''});
   } catch(err){console.error('EmailJS:',err);}
   document.getElementById('modal-content').innerHTML='<div class="success-state"><div class="success-icon">🙏</div><h3>Inscription confirmée !</h3><p>Bonjour <strong>'+prenom+'</strong>, ton inscription est bien enregistrée.<br/><br/><strong>'+s.type+'</strong><br/>'+dateFormatted+' à '+timeStr+'<br/>'+s.lieu+'<br/><br/>Un e-mail de confirmation t\'a \u00e9t\u00e9 envoy\u00e9 \u00e0 <strong>'+email+'</strong>.</p><button class="btn-primary" style="margin-top:1.5rem" onclick="closeBookingDirect()">Fermer</button></div>';
 }
@@ -550,6 +613,7 @@ function renderAdminContent() {
       +'<div class="login-form">'
       +'<svg viewBox="0 0 80 80" width="60" height="60" style="margin:0 auto 1rem;display:block"><circle cx="40" cy="40" r="38" fill="none" stroke="#8f4333" stroke-width="3"/><text x="40" y="52" text-anchor="middle" font-family="Fraunces,serif" font-size="28" fill="#8f4333" font-style="italic">AM</text></svg>'
       +'<h3>Espace réservé</h3>'
+      +'<div class="form-group" style="text-align:left"><label>E-mail</label><input type="email" id="admin-email" placeholder="ton@email.fr" onkeydown="handleAdminKeydown(event)"/></div>'
       +'<div class="form-group" style="text-align:left"><label>Mot de passe</label><input type="password" id="admin-pw" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" onkeydown="handleAdminKeydown(event)"/></div>'
       +'<button class="btn-primary" onclick="checkAdminLogin()">Connexion</button>'
       +'<div class="login-err" id="login-err"></div>'
@@ -561,9 +625,13 @@ function renderAdminContent() {
 
 function handleAdminKeydown(e){if(e.key==='Enter')checkAdminLogin();}
 function checkAdminLogin() {
+  var email=(document.getElementById('admin-email')||{}).value||'';
   var pw=document.getElementById('admin-pw').value;
-  if(pw===CONFIG.adminPassword){adminLoggedIn=true;renderAdminContent();}
-  else document.getElementById('login-err').textContent='Mot de passe incorrect.';
+  var errEl=document.getElementById('login-err');
+  errEl.textContent='Connexion…';
+  auth.signInWithEmailAndPassword(email.trim(),pw)
+    .then(function(){ errEl.textContent=''; })   // la suite est gérée par onAuthStateChanged
+    .catch(function(){ errEl.textContent='E-mail ou mot de passe incorrect.'; });
 }
 
 
@@ -600,7 +668,7 @@ function renderAdminPanel(panel) {
       +'<div>'
       +'<div style="font-weight:600;color:var(--burgundy)">'+s.type+'</div>'
       +'<div style="opacity:.65;font-size:.8rem">'+dateStr+' à '+timeStr+' · '+s.lieu+'</div>'
-      +'<div style="font-size:.78rem;color:var(--green);margin-top:2px">'+s.registrations.length+'/'+s.maxParticipants+' inscrits</div>'
+      +'<div style="font-size:.78rem;color:var(--green);margin-top:2px">'+regCount(s)+'/'+s.maxParticipants+' inscrits</div>'
       +'</div>'
       +'</div>'
       +'<div class="session-actions">'
@@ -644,7 +712,7 @@ function renderAdminPanel(panel) {
   });
   if(!hasClients) clientsHTML='<p style="font-size:.85rem;opacity:.6">Aucune inscription pour le moment.</p>';
 
-  panel.innerHTML='<button class="modal-close" onclick="closeAdminDirect();adminLoggedIn=false;" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#383837;opacity:.5">&#215;</button>'
+  panel.innerHTML='<button class="modal-close" onclick="closeAdminDirect();logoutAdmin();" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#383837;opacity:.5">&#215;</button>'
     +'<h2 style="font-size:1.6rem;font-weight:300;font-style:italic;color:var(--burgundy);margin-bottom:1.5rem">🌿 Espace admin</h2>'
     +'<div class="admin-section">'
     +'<h4>Ajouter une session</h4>'
@@ -679,7 +747,7 @@ function renderAdminPanel(panel) {
     +(upcoming.length>0?'<p style="font-size:.78rem;opacity:.65;margin-bottom:.5rem">Coche des séances pour en supprimer plusieurs d&#39;un coup.</p><button onclick="deleteSelectedSessions()" style="background:var(--burgundy);color:var(--cream);border:none;border-radius:2rem;padding:.5rem 1.2rem;font-size:.85rem;cursor:pointer;font-family:var(--font);margin-bottom:.8rem">🗑 Supprimer la sélection</button>':'')
     +(upcoming.length===0?'<p style="font-size:.85rem;opacity:.6">Aucune session.</p>':listHTML)
     +'</div>'
-    +'<button onclick="adminLoggedIn=false;renderAdminContent()" style="background:none;border:none;color:var(--grey);opacity:.5;cursor:pointer;font-family:var(--font);font-size:.85rem;padding:.5rem 0">Se déconnecter</button>';
+    +'<button onclick="logoutAdmin()" style="background:none;border:none;color:var(--grey);opacity:.5;cursor:pointer;font-family:var(--font);font-size:.85rem;padding:.5rem 0">Se déconnecter</button>';
   setupAdminDelegation(panel);
 }
 
@@ -951,7 +1019,15 @@ function showToast(msg,type) {
 emailjs.init({publicKey:CONFIG.emailjsPublicKey,blockHeadless:false});
 renderCalendar();
 renderWeek();
-initFirebaseListener();
+initPublicListener();
+auth.onAuthStateChanged(function(user){
+  var wasAdmin=adminLoggedIn;
+  adminLoggedIn=!!user;
+  if(user){ startAdminData(); }
+  else if(wasAdmin){ stopAdminData(); }
+  var ov=document.getElementById('admin-overlay');
+  if(ov && ov.classList.contains('active')) renderAdminContent();
+});
 (function(){var a=document.getElementById('contact-link');if(a){a.href='mailto:aliyoga2508@gmail.com';}})();
 </script>
 </body>
