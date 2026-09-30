@@ -263,6 +263,7 @@ footer a{color:var(--cream);text-decoration:none;border-bottom:1px solid rgba(23
 <footer>
   <p>Alizée Monnier &mdash; Professeure de Yoga</p>
   <p style="margin-top:.5rem;opacity:.6;font-size:.8rem">Contact : <a id="contact-link" href="#">aliyoga2508&#64;gmail.com</a></p>
+  <p style="margin-top:.4rem;opacity:.6;font-size:.8rem"><a href="confidentialite.html" style="color:inherit;text-decoration:underline">Mentions légales &amp; confidentialité</a></p>
 </footer>
 
 <script>
@@ -556,6 +557,7 @@ function openBooking(id) {
     html+='<div class="form-row"><div class="form-group"><label>Prénom *</label><input type="text" id="f-prenom" placeholder="Marie"/></div><div class="form-group"><label>Nom *</label><input type="text" id="f-nom" placeholder="Dupont"/></div></div>';
     html+='<div class="form-group"><label>Adresse e-mail *</label><input type="email" id="f-email" placeholder="marie@exemple.fr"/></div>';
     html+='<div class="form-group"><label>Téléphone *</label><input type="tel" id="f-tel" placeholder="06 00 00 00 00"/></div>';
+    html+='<div class="form-group" style="flex-direction:row;align-items:flex-start;gap:.5rem"><input type="checkbox" id="f-consent" style="width:16px;height:16px;margin-top:.2rem;accent-color:var(--burgundy);flex-shrink:0;cursor:pointer"/><label for="f-consent" style="font-size:.78rem;font-weight:400;line-height:1.45;cursor:pointer">J\'accepte que mes données (nom, e-mail, téléphone) soient utilisées pour gérer mon inscription. <a href="confidentialite.html" target="_blank" style="text-decoration:underline">En savoir plus</a></label></div>';
     html+='<button class="btn-primary submit-action" id="submit-btn" data-id="'+id+'">Confirmer mon inscription</button>';
   }
   document.getElementById('modal-content').innerHTML=html;
@@ -572,6 +574,8 @@ async function submitBooking(id) {
   var tel=document.getElementById('f-tel').value.trim();
   if(!prenom||!nom||!email||!tel){showToast('Merci de remplir tous les champs','error');return;}
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showToast('E-mail invalide','error');return;}
+  var _cons=document.getElementById('f-consent');
+  if(!_cons||!_cons.checked){showToast('Merci d\'accepter l\'utilisation de tes données pour t\'inscrire','error');return;}
   var _s0=sessions.find(function(x){return x.id===id;});
   if(_s0&&isBookingClosed(_s0)){showToast('Les inscriptions en ligne sont closes 1 h avant le cours — contacte-moi directement','error');return;}
   var btn=document.getElementById('submit-btn');
