@@ -790,7 +790,7 @@ function _findSession(sid){return sessions.find(function(s){return s.id===sid;})
 
 function cycleStatut(sid, ridx){
   var s=_findSession(sid); if(!s)return;
-  var r=s.registrations[ridx]; if(!r)return;
+  var r=(s.registrations||[])[ridx]; if(!r)return;
   var order=['','present','absent'];
   var i=order.indexOf(r.statut||'');
   r.statut=order[(i+1)%order.length];
@@ -799,14 +799,14 @@ function cycleStatut(sid, ridx){
 
 function saveNote(sid, ridx, val){
   var s=_findSession(sid); if(!s)return;
-  var r=s.registrations[ridx]; if(!r)return;
+  var r=(s.registrations||[])[ridx]; if(!r)return;
   r.note=val;
   saveSessions();
 }
 
 function removeReg(sid, ridx){
   var s=_findSession(sid); if(!s)return;
-  var r=s.registrations[ridx]; if(!r)return;
+  var r=(s.registrations||[])[ridx]; if(!r)return;
   if(!confirm('Retirer '+(r.prenom||'')+' '+(r.nom||'')+' de cette séance ?'))return;
   s.registrations.splice(ridx,1);
   saveSessions();
@@ -969,7 +969,7 @@ function saveEditSession() {
   closeEditModalDirect();
   showToast(affected.length>1?(affected.length+' séances modifiées !'):'Session modifiée !');
   affected.forEach(function(a){
-    var regs=a.s.registrations.filter(function(r){return r.email&&r.email!=='x@x.fr';});
+    var regs=(a.s.registrations||[]).filter(function(r){return r&&r.email&&r.email!=='x@x.fr';});
     if(a.changed&&regs.length>0){
       sendInfoMail(a.s,'modification','📅 '+parseDate(a.s.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+'\n⏰ '+time+(timeEnd?' – '+timeEnd:'')+'\n📍 '+lieu);
     }
