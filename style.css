@@ -251,3 +251,23 @@ footer .legal a{color:var(--cream)}
 @media(min-width:900px){.article figure{margin-left:-4rem;margin-right:-4rem}}
 .article p,.article li{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
 .article .invite p,.article .takeaway p{text-align:center}
+
+/* ─── Inscription « La lettre d'Aliyoga » (newsletter.js) ─── */
+.newsletter{background:var(--green);color:var(--cream);text-align:center;padding:3.6rem 0}
+.newsletter .nl-inner{max-width:720px}
+.newsletter .nl-label{font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;opacity:.85;margin-bottom:.5rem}
+.newsletter h2{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:300;color:#fff;margin-bottom:.6rem}
+.newsletter .nl-intro{max-width:520px;margin:0 auto 1.6rem}
+.nl-fields{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap}
+.nl-fields input{font-family:var(--font);font-size:1rem;padding:.8rem 1.2rem;border-radius:2rem;border:1.5px solid transparent;
+  background:var(--cream);color:var(--grey);flex:1 1 180px;min-width:0}
+.nl-fields input:focus{outline:none;border-color:var(--burgundy)}
+.nl-fields .btn{flex:0 0 auto}
+.nl-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.nl-consent{display:flex;gap:.55rem;align-items:flex-start;justify-content:center;font-size:.85rem;opacity:.92;margin-top:1rem;text-align:left;cursor:pointer}
+.nl-consent input{margin-top:.25rem;accent-color:var(--burgundy);flex-shrink:0}
+.nl-consent a{color:var(--cream)}
+.nl-msg{margin-top:1rem;font-size:1rem;min-height:1.2em}
+.nl-msg.ok{font-size:1.1rem;font-style:italic}
+.nl-msg.err{color:#fff;font-weight:500}
+@media(max-width:560px){.nl-fields{flex-direction:column}.nl-fields .btn{width:100%}}

@@ -82,6 +82,12 @@
       données servent uniquement à <strong>gérer ton inscription</strong> aux cours&nbsp;: confirmer ta place,
       te transmettre les informations pratiques, et te prévenir en cas de modification ou d'annulation.
     </p>
+    <p class="section-intro" style="text-align:left;margin:0 0 1rem">
+      Si tu t'inscris à <strong>la lettre d'Aliyoga</strong> (ou si tu as déjà pratiqué avec moi), ton
+      <strong>prénom et ton adresse e-mail</strong> servent à t'envoyer, environ une fois par mois, des nouvelles
+      de mes cours, articles et rendez-vous. Chaque lettre contient un <strong>lien de désinscription</strong>
+      en un clic.
+    </p>
 
     <h3 style="font-size:1.1rem;color:var(--green);margin:1.4rem 0 .4rem">Base légale</h3>
     <p class="section-intro" style="text-align:left;margin:0 0 1rem">
@@ -94,7 +100,8 @@
       Tes données sont <strong>strictement réservées à Alizée Monnier</strong> et ne sont ni vendues ni
       partagées à des fins commerciales. Elles sont stockées de façon sécurisée via <strong>Firebase</strong>
       (Google, serveurs situés dans l'Union européenne), et les e-mails de confirmation sont envoyés via
-      <strong>EmailJS</strong>. Ces prestataires techniques agissent uniquement pour le fonctionnement du service.
+      <strong>EmailJS</strong>. La lettre d'Aliyoga est envoyée via <strong>Brevo</strong> (entreprise française,
+      données hébergées dans l'Union européenne). Ces prestataires techniques agissent uniquement pour le fonctionnement du service.
     </p>
 
     <h3 style="font-size:1.1rem;color:var(--green);margin:1.4rem 0 .4rem">Combien de temps sont-elles conservées ?</h3>
@@ -146,5 +153,6 @@ document.querySelectorAll('#navlinks a').forEach(function(a){
   a.addEventListener('click',function(){document.getElementById('navlinks').classList.remove('open')});
 });
 </script>
+<script src="newsletter.js" defer></script>
 </body>
 </html>
