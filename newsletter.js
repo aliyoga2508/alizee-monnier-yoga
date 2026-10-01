@@ -11,7 +11,7 @@
   sec.id = 'newsletter';
   sec.innerHTML =
     '<div class="container nl-inner">'
-    + '<p class="nl-label">La lettre d\'Aliyoga 🍂</p>'
+    + '<p class="nl-label">La lettre d\'Aliyoga 🐘</p>'
     + '<h2>Une lettre, chaque mois</h2>'
     + '<p class="nl-intro">Mes articles, les prochains rendez-vous et un peu d\'inspiration pour ta pratique. Pas plus.</p>'
     + '<form class="nl-form" novalidate>'
