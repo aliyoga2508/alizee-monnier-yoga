@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cartes 10 cours · Espace admin Aliyoga</title>
+<meta name="robots" content="noindex, nofollow"/>
+<meta name="theme-color" content="#8f4333"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&display=swap" rel="stylesheet"/>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#ebe1d0;--burgundy:#8f4333;--green:#687257;--grey:#383837;
+  --cream-dark:#d6c9b3;--font:'Fraunces',Georgia,serif;
+}
+body{font-family:var(--font);background:var(--cream);color:var(--grey);min-height:100vh}
+header{background:var(--burgundy);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;position:sticky;top:0;z-index:50}
+header h1{color:var(--cream);font-size:1.3rem;font-weight:300;font-style:italic}
+header nav{display:flex;gap:.5rem;flex-wrap:wrap}
+.hbtn{background:transparent;border:1px solid rgba(235,225,208,.4);color:var(--cream);padding:.35rem .9rem;border-radius:2rem;font-family:var(--font);font-size:.82rem;cursor:pointer;text-decoration:none}
+.hbtn:hover{background:rgba(235,225,208,.15)}
+main{max-width:860px;margin:0 auto;padding:1.5rem 1rem 4rem}
+.box{background:#fff;border-radius:14px;padding:1.2rem 1.3rem;margin-bottom:1.2rem;box-shadow:0 1px 3px rgba(56,56,55,.06)}
+.box h2{font-size:1.15rem;font-weight:400;font-style:italic;color:var(--burgundy);margin-bottom:.6rem}
+.hint{font-size:.8rem;opacity:.65;margin-bottom:.7rem;line-height:1.5}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:1.2rem}
+.stat{background:#fff;border-radius:12px;padding:.8rem;text-align:center}
+.stat b{display:block;font-size:1.6rem;font-weight:400;color:var(--burgundy)}
+.stat span{font-size:.75rem;opacity:.7}
+.toolbar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
+input,select,textarea{font-family:var(--font);font-size:.9rem;padding:.5rem .7rem;border:1px solid var(--cream-dark);border-radius:8px;background:#fff;color:var(--grey);width:100%}
+.toolbar input{flex:1;min-width:160px;width:auto}
+.toolbar select{width:auto}
+.btn{background:var(--burgundy);color:var(--cream);border:none;border-radius:2rem;padding:.55rem 1.2rem;font-family:var(--font);font-size:.88rem;cursor:pointer;white-space:nowrap}
+.btn:hover{opacity:.9}
+.btn.green{background:var(--green)}
+.btn.ghost{background:none;color:var(--burgundy);border:1px solid var(--cream-dark)}
+.btn.small{padding:.3rem .8rem;font-size:.78rem}
+.card{background:#fff;border-radius:14px;padding:1rem 1.1rem;margin-bottom:.8rem;border-left:5px solid var(--green)}
+.card.warn{border-left-color:#c9853a}
+.card.done{border-left-color:var(--cream-dark);opacity:.75}
+.card-top{display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap;align-items:flex-start}
+.card-name{font-size:1.05rem;font-weight:600;color:var(--grey)}
+.card-meta{font-size:.76rem;opacity:.65;margin-top:.15rem;word-break:break-word}
+.tag{display:inline-block;font-size:.72rem;padding:.12rem .6rem;border-radius:2rem;background:rgba(104,114,87,.14);color:var(--green);margin-right:.3rem}
+.tag.bulle{background:rgba(143,67,51,.1);color:var(--burgundy)}
+.tag.alert{background:#f6e3c8;color:#8a5a1c}
+.tag.over{background:var(--burgundy);color:var(--cream)}
+.dots{display:flex;gap:5px;flex-wrap:wrap;margin:.7rem 0 .5rem}
+.dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--green)}
+.dot.used{background:var(--green)}
+.remain{font-size:.85rem}
+.remain b{color:var(--burgundy);font-size:1.05rem}
+.card-actions{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;margin-top:.6rem}
+.card-actions input[type=date]{width:auto;font-size:.8rem;padding:.3rem .5rem}
+.hist{margin-top:.7rem;border-top:1px dotted var(--cream-dark);padding-top:.5rem;font-size:.8rem}
+.hist div{display:flex;justify-content:space-between;align-items:center;padding:.2rem 0}
+.x{background:none;border:none;color:var(--burgundy);cursor:pointer;font-size:.8rem;opacity:.7;font-family:var(--font)}
+.linkbtn{background:none;border:none;color:var(--burgundy);text-decoration:underline;cursor:pointer;font-family:var(--font);font-size:.8rem;opacity:.8}
+.pointage-row{display:flex;gap:.6rem;align-items:center;padding:.45rem 0;border-bottom:1px dotted var(--cream-dark);font-size:.85rem}
+.pointage-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--burgundy);flex-shrink:0}
+.pointage-row .who{flex:1;min-width:0}
+.pointage-row small{display:block;opacity:.6;font-size:.74rem}
+details summary{cursor:pointer;color:var(--burgundy);font-size:.95rem;margin:1.2rem 0 .7rem}
+.overlay{position:fixed;inset:0;background:rgba(56,56,55,.5);display:none;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto;z-index:200}
+.overlay.active{display:flex}
+.modal{background:var(--cream);border-radius:16px;max-width:480px;width:100%;padding:1.6rem;position:relative}
+.modal h3{font-size:1.3rem;font-weight:300;font-style:italic;color:var(--burgundy);margin-bottom:1rem}
+.fg{margin-bottom:.75rem}
+.fg label{display:block;font-size:.78rem;opacity:.75;margin-bottom:.25rem}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.login{max-width:360px;margin:3rem auto;background:#fff;border-radius:16px;padding:2rem;text-align:center}
+.login h2{font-weight:300;font-style:italic;color:var(--burgundy);margin-bottom:1.2rem}
+.login .fg{text-align:left}
+.err{color:var(--burgundy);font-size:.82rem;margin-top:.7rem;min-height:1em}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--grey);color:var(--cream);padding:.7rem 1.3rem;border-radius:2rem;font-size:.85rem;opacity:0;transition:opacity .3s;pointer-events:none;z-index:300}
+.toast.show{opacity:1}
+.empty{text-align:center;opacity:.6;font-size:.9rem;padding:1.5rem}
+@media (max-width:560px){
+  .stats{grid-template-columns:repeat(3,1fr);gap:.4rem}
+  .stat b{font-size:1.3rem}
+  .row{grid-template-columns:1fr}
+  .dot{width:19px;height:19px}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎟️ Cartes 10 cours</h1>
+  <nav>
+    <a class="hbtn" href="reservation.html">← Réservations</a>
+    <button class="hbtn" id="logout-btn" style="display:none" onclick="auth.signOut()">Se déconnecter</button>
+  </nav>
+</header>
+<main id="app"><p class="empty">Chargement…</p></main>
+
+<div class="overlay" id="card-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="card-modal-content"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyAAz_-aMvwHkjMCi2yjG0BPlm6zscfu1Bw",
+  authDomain: "aliyoga-1beb4.firebaseapp.com",
+  databaseURL: "https://aliyoga-1beb4-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "aliyoga-1beb4",
+  storageBucket: "aliyoga-1beb4.firebasestorage.app",
+  messagingSenderId: "110494249497",
+  appId: "1:110494249497:web:8a52951b270e7bfdc1b088"
+});
+const db = firebase.database();
+const auth = firebase.auth();
+const cartesRef = db.ref('cartes');      // cartes des élèves — lecture/écriture réservées à l'admin connectée
+const sessionsRef = db.ref('sessions');  // séances + inscrits (pour pointer une séance d'un coup)
+
+/* ─── Réglages par studio (pré-remplis à la création d'une carte, modifiables) ─── */
+var STUDIOS = {
+  'La Bulle':      {prix:175, moisValidite:5},   // valable 5 mois (cf. la-bulle.html)
+  'Pure Vitality': {prix:230, moisValidite:0},   // 0 = pas de date limite par défaut
+  'Autre':         {prix:'',  moisValidite:0}
+};
+var ALERTE_RESTANTS = 2;   // alerte « à renouveler » quand il reste 2 cours ou moins
+var ALERTE_JOURS = 21;     // … ou quand la carte expire dans moins de 21 jours
+
+var cartes = {};           // id → carte
+var sessions = [];
+var filtreStudio = '';
+var recherche = '';
+var openHist = {};         // id → historique déplié
+var pointageSid = '';
+var cartesError = false;
+
+/* ─── Utilitaires ─── */
+function _esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function pad(n){return (n<10?'0':'')+n;}
+function todayISO(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function parseISO(s){var p=(s||'').split('-');return new Date(+p[0],(+p[1]||1)-1,+p[2]||1);}
+function addMonthsISO(iso,m){var d=parseISO(iso);d.setMonth(d.getMonth()+m);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function frDate(iso,opts){return iso?parseISO(iso).toLocaleDateString('fr-FR',opts||{day:'numeric',month:'short',year:'numeric'}):'';}
+function daysUntil(iso){return Math.round((parseISO(iso)-parseISO(todayISO()))/86400000);}
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();}
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show');},2600);}
+
+function usages(c){return Array.isArray(c.usages)?c.usages:(c.usages?Object.values(c.usages):[]);}
+function restants(c){return (+c.total||10)-usages(c).length;}
+function isExpired(c){return !!c.validite && daysUntil(c.validite)<0;}
+function isDone(c){return c.archivee || restants(c)<=0 || isExpired(c);}
+function needsAlert(c){
+  if(isDone(c)) return false;
+  return restants(c)<=ALERTE_RESTANTS || (c.validite && daysUntil(c.validite)<=ALERTE_JOURS);
+}
+function saveCarte(c){
+  c.usages = usages(c).sort(function(a,b){return (a.date||'').localeCompare(b.date||'');});
+  return cartesRef.child(c.id).set(c).catch(function(){toast('⚠️ Enregistrement refusé — vérifie la connexion');});
+}
+
+/* ─── Connexion ─── */
+function renderLogin(){
+  document.getElementById('logout-btn').style.display='none';
+  document.getElementById('app').innerHTML='<div class="login">'
+    +'<h2>Espace réservé</h2>'
+    +'<div class="fg"><label>E-mail</label><input type="email" id="l-email" autocomplete="username"/></div>'
+    +'<div class="fg"><label>Mot de passe</label><input type="password" id="l-pw" autocomplete="current-password" onkeydown="if(event.key===\'Enter\')login()"/></div>'
+    +'<button class="btn" onclick="login()">Connexion</button>'
+    +'<div class="err" id="l-err"></div></div>';
+}
+function login(){
+  var err=document.getElementById('l-err'); err.textContent='Connexion…';
+  auth.signInWithEmailAndPassword(document.getElementById('l-email').value.trim(),document.getElementById('l-pw').value)
+    .catch(function(){err.textContent='E-mail ou mot de passe incorrect.';});
+}
+
+auth.onAuthStateChanged(function(user){
+  if(!user){ cartesRef.off(); sessionsRef.off(); cartes={}; sessions=[]; renderLogin(); return; }
+  document.getElementById('logout-btn').style.display='';
+  cartesRef.on('value',function(sn){ cartes=sn.val()||{}; cartesError=false; render(); },
+    function(){ cartesError=true; render(); });
+  sessionsRef.on('value',function(sn){
+    sessions=Object.values(sn.val()||{}).filter(function(s){return s&&s.date;}).map(function(s){
+      if(s.registrations&&!Array.isArray(s.registrations)) s.registrations=Object.values(s.registrations);
+      return s;
+    });
+    render();
+  });
+});
+
+/* ─── Affichage principal ─── */
+function render(){
+  var app=document.getElementById('app');
+  if(cartesError){
+    app.innerHTML='<div class="box"><h2>Accès à la base refusé</h2><p class="hint">La base Firebase n’autorise pas encore la rubrique <b>cartes</b>. Il faut ajouter une règle dans la console Firebase (Realtime Database → Règles) :</p>'
+      +'<pre style="background:var(--cream);padding:.8rem;border-radius:8px;font-size:.8rem;overflow-x:auto">"cartes": {\n  ".read": "auth != null",\n  ".write": "auth != null"\n}</pre></div>';
+    return;
+  }
+  var list=Object.values(cartes).filter(function(c){return c&&c.id;});
+  var actives=list.filter(function(c){return !isDone(c);});
+  var alertes=actives.filter(needsAlert);
+  var coursRestants=actives.reduce(function(n,c){return n+restants(c);},0);
+
+  var q=norm(recherche);
+  function match(c){
+    if(filtreStudio && c.studio!==filtreStudio) return false;
+    if(q && norm(c.prenom+' '+c.nom+' '+c.email+' '+c.tel).indexOf(q)===-1) return false;
+    return true;
+  }
+  function byName(a,b){return norm(a.prenom+a.nom).localeCompare(norm(b.prenom+b.nom));}
+  // les cartes « à renouveler » d'abord, puis ordre alphabétique
+  var shownActive=actives.filter(match).sort(function(a,b){return (needsAlert(b)-needsAlert(a))||byName(a,b);});
+  var shownDone=list.filter(function(c){return isDone(c)&&match(c);}).sort(function(a,b){return (b.dateAchat||'').localeCompare(a.dateAchat||'');});
+
+  var studioOpts='<option value="">Tous les studios</option>'+Object.keys(STUDIOS).map(function(s){return '<option'+(s===filtreStudio?' selected':'')+'>'+s+'</option>';}).join('');
+
+  app.innerHTML=
+     '<div class="stats">'
+    +'<div class="stat"><b>'+actives.length+'</b><span>cartes en cours</span></div>'
+    +'<div class="stat"><b>'+alertes.length+'</b><span>à renouveler bientôt</span></div>'
+    +'<div class="stat"><b>'+coursRestants+'</b><span>cours restant à donner</span></div>'
+    +'</div>'
+    +renderPointage()
+    +'<div class="toolbar">'
+    +'<input type="search" id="search" placeholder="🔍 Rechercher une élève…" value="'+_esc(recherche)+'" oninput="recherche=this.value;renderKeepFocus()"/>'
+    +'<select onchange="filtreStudio=this.value;render()">'+studioOpts+'</select>'
+    +'<button class="btn" onclick="openModal()">+ Nouvelle carte</button>'
+    +'</div>'
+    +(shownActive.length?shownActive.map(renderCard).join(''):'<p class="empty">'+(list.length?'Aucune carte en cours pour ce filtre.':'Aucune carte pour l’instant — clique sur « + Nouvelle carte » quand une élève en achète une.')+'</p>')
+    +(shownDone.length?'<details><summary>Cartes terminées / expirées ('+shownDone.length+')</summary>'+shownDone.map(renderCard).join('')+'</details>':'')
+    +(list.length?'<p style="margin-top:1.5rem"><button class="btn ghost small" onclick="exportCSV()">⬇️ Exporter (CSV)</button></p>':'');
+}
+function renderKeepFocus(){
+  var el=document.getElementById('search'), pos=el?el.selectionStart:0;
+  render();
+  el=document.getElementById('search'); if(el){el.focus();el.setSelectionRange(pos,pos);}
+}
+
+function renderCard(c){
+  var used=usages(c), total=+c.total||10, rest=total-used.length, done=isDone(c), warn=needsAlert(c);
+  var dots=''; for(var i=0;i<total;i++) dots+='<span class="dot'+(i<used.length?' used':'')+'"></span>';
+  var tags='<span class="tag'+(c.studio==='La Bulle'?' bulle':'')+'">'+_esc(c.studio||'—')+'</span>';
+  if(c.archivee) tags+='<span class="tag">archivée</span>';
+  else if(rest<=0) tags+='<span class="tag over">terminée</span>';
+  else if(isExpired(c)) tags+='<span class="tag over">expirée</span>';
+  else if(warn) tags+='<span class="tag alert">à renouveler</span>';
+  if(c.paye===false) tags+='<span class="tag alert">💶 pas encore payée</span>';
+
+  var validite=c.validite?(isExpired(c)?'expirée le ':'valable jusqu’au ')+frDate(c.validite)+(!isExpired(c)&&daysUntil(c.validite)<=ALERTE_JOURS?' ('+daysUntil(c.validite)+' j)':''):'sans date limite';
+  var meta=[c.email,c.tel].filter(Boolean).map(_esc).join(' · ');
+  var achat='Achetée le '+frDate(c.dateAchat)+(c.montant?' · '+_esc(c.montant)+' €':'')+(c.paiement?' · '+_esc(c.paiement):'');
+
+  var hist='';
+  if(openHist[c.id]){
+    hist='<div class="hist">'+(used.length?used.map(function(u,i){
+      return '<div><span>'+(i+1)+'. <input type="date" value="'+_esc(u.date)+'" onchange="changeUsageDate(\''+c.id+'\','+i+',this.value)" style="width:auto;font-size:.78rem;padding:.15rem .35rem" title="Modifier la date"/>'+(u.label?' · <span style="opacity:.6">'+_esc(u.label)+'</span>':'')+'</span>'
+        +'<button class="x" onclick="removeUsage(\''+c.id+'\','+i+')" title="Annuler ce cours">✕ annuler</button></div>';
+    }).join(''):'<span style="opacity:.6">Aucun cours pointé pour l’instant.</span>')
+      +(c.note?'<p style="margin-top:.5rem;opacity:.75">📝 '+_esc(c.note)+'</p>':'')+'</div>';
+  }
+
+  return '<div class="card'+(done?' done':warn?' warn':'')+'">'
+    +'<div class="card-top"><div><div class="card-name">'+_esc(c.prenom)+' '+_esc(c.nom)+'</div>'
+    +(meta?'<div class="card-meta">'+meta+'</div>':'')+'</div><div>'+tags+'</div></div>'
+    +'<div class="dots">'+dots+'</div>'
+    +'<div class="remain"><b>'+Math.max(rest,0)+'</b> cours restant'+(rest>1?'s':'')+' sur '+total+' · <span style="opacity:.7">'+validite+'</span></div>'
+    +'<div class="card-meta">'+achat+'</div>'
+    +'<div class="card-actions">'
+    +(!done?'<label style="font-size:.78rem;opacity:.75" for="d-'+c.id+'">Date du cours :</label><input type="date" id="d-'+c.id+'" value="'+todayISO()+'" max="'+todayISO()+'"/><button class="btn green small" onclick="addUsage(\''+c.id+'\')">✓ Pointer un cours</button>':'')
+    +(used.length&&!c.archivee?'<button class="btn ghost small" onclick="undoLast(\''+c.id+'\')" title="Retire le dernier cours pointé">↶ Dépointer</button>':'')
+    +'<button class="linkbtn" onclick="openHist[\''+c.id+'\']=!openHist[\''+c.id+'\'];render()">'+(openHist[c.id]?'Masquer':'Historique')+'</button>'
+    +'<button class="linkbtn" onclick="openModal(\''+c.id+'\')">Modifier</button>'
+    +(rest<=0||isExpired(c)?'<button class="linkbtn" onclick="renew(\''+c.id+'\')">↻ Nouvelle carte pour '+_esc(c.prenom)+'</button>':'')
+    +'</div>'+hist+'</div>';
+}
+
+/* ─── Pointer une séance entière (à partir des inscrits du calendrier) ─── */
+function cardForReg(r, studio){
+  var em=norm(r.email), full=norm(r.prenom+' '+r.nom);
+  var cands=Object.values(cartes).filter(function(c){return c&&!isDone(c)&&((em&&norm(c.email)===em)||norm(c.prenom+' '+c.nom)===full);});
+  // si l'élève a plusieurs cartes (ex : une par studio), on prend celle du studio de la séance, sinon la plus ancienne
+  var same=cands.filter(function(c){return c.studio===studio;});
+  var pool=same.length?same:cands;
+  return pool.sort(function(a,b){return (a.dateAchat||'').localeCompare(b.dateAchat||'');})[0]||null;
+}
+function studioOfSession(s){
+  var ctx=norm((s.lieu||'')+' '+(s.type||''));
+  if(ctx.indexOf('bulle')!==-1||ctx.indexOf('argonay')!==-1) return 'La Bulle';
+  if(ctx.indexOf('vitality')!==-1||ctx.indexOf('seynod')!==-1) return 'Pure Vitality';
+  return '';
+}
+function renderPointage(){
+  var today=todayISO(), from=addMonthsISO(today,-1);
+  var recent=sessions.filter(function(s){
+    var regs=(s.registrations||[]).filter(function(r){return r&&r.email&&r.email!=='x@x.fr';});
+    return s.date<=today && s.date>=from && regs.length;
+  }).sort(function(a,b){return (b.date+b.time).localeCompare(a.date+a.time);});
+  if(!recent.length || !Object.keys(cartes).length) return '';
+  if(!recent.some(function(s){return s.id===pointageSid;})) pointageSid=recent[0].id;
+
+  var opts=recent.map(function(s){return '<option value="'+_esc(s.id)+'"'+(s.id===pointageSid?' selected':'')+'>'+frDate(s.date,{weekday:'short',day:'numeric',month:'short'})+' '+_esc(s.time)+' · '+_esc(s.type)+'</option>';}).join('');
+  var s=recent.find(function(x){return x.id===pointageSid;}), studio=studioOfSession(s);
+  var regs=(s.registrations||[]).filter(function(r){return r&&r.email&&r.email!=='x@x.fr';});
+  var anyMarked=regs.some(function(r){return r.statut==='present'||r.statut==='absent';});
+  var rows='', nbCheckable=0;
+  regs.forEach(function(r,i){
+    var c=cardForReg(r,studio);
+    var already=Object.values(cartes).some(function(k){return k&&usages(k).some(function(u){return u.sid===s.id&&norm(u.email)===norm(r.email);});});
+    var right, box;
+    if(already){ box='<input type="checkbox" disabled checked/>'; right='<small style="color:var(--green)">✓ déjà décompté</small>'; }
+    else if(!c){ box='<input type="checkbox" disabled/>'; right='<small>pas de carte en cours</small>'; }
+    else {
+      nbCheckable++;
+      var checked = anyMarked ? r.statut==='present' : true;   // si tu as noté présent/absent, on s'en sert
+      box='<input type="checkbox" class="pt-check" data-card="'+c.id+'" data-email="'+_esc(r.email)+'"'+(checked?' checked':'')+(r.statut==='absent'?' title="Notée absente"':'')+'/>';
+      right='<small>carte '+_esc(c.studio)+' · '+restants(c)+' restant'+(restants(c)>1?'s':'')+(r.statut==='absent'?' · ❌ absente':'')+'</small>';
+    }
+    rows+='<label class="pointage-row">'+box+'<span class="who">'+_esc(r.prenom)+' '+_esc(r.nom)+right+'</span></label>';
+  });
+  return '<div class="box"><h2>Pointer une séance</h2>'
+    +'<p class="hint">Choisis une séance passée : les inscrites qui ont une carte sont cochées (si tu as noté présent/absent dans l’espace réservation, seules les présentes le sont). Un clic décompte un cours sur chaque carte cochée.</p>'
+    +'<select onchange="pointageSid=this.value;render()" style="margin-bottom:.6rem">'+opts+'</select>'
+    +rows
+    +(nbCheckable?'<button class="btn green" style="margin-top:.9rem" onclick="pointerSeance()">✓ Décompter les cours cochés</button>':'')
+    +'</div>';
+}
+function pointerSeance(){
+  var s=sessions.find(function(x){return x.id===pointageSid;}); if(!s) return;
+  var checks=[].slice.call(document.querySelectorAll('.pt-check:checked'));
+  if(!checks.length){toast('Aucune élève cochée');return;}
+  var label=s.type+(s.time?' · '+s.time:'');
+  Promise.all(checks.map(function(cb){
+    var c=cartes[cb.dataset.card]; if(!c) return null;
+    var u=usages(c); u.push({date:s.date,label:label,sid:s.id,email:cb.dataset.email,ts:Date.now()}); c.usages=u;
+    return saveCarte(c);
+  })).then(function(){toast('✓ '+checks.length+' cours décompté'+(checks.length>1?'s':''));});
+}
+
+/* ─── Actions sur une carte ─── */
+function addUsage(id){
+  var c=cartes[id]; if(!c) return;
+  var d=(document.getElementById('d-'+id)||{}).value||todayISO();
+  if(!confirm('Pointer le cours du '+frDate(d,{weekday:'long',day:'numeric',month:'long'})+' pour '+c.prenom+' ?')) return;
+  var u=usages(c); u.push({date:d,ts:Date.now()}); c.usages=u;
+  saveCarte(c).then(function(){var r=restants(c);toast('✓ Cours pointé pour '+c.prenom+' — '+(r>0?r+' restant'+(r>1?'s':''):'carte terminée 🎉'));});
+}
+function removeUsage(id,i){
+  var c=cartes[id]; if(!c) return;
+  var u=usages(c).sort(function(a,b){return (a.date||'').localeCompare(b.date||'');});
+  if(!confirm('Annuler le cours du '+frDate(u[i].date)+' ? (il sera recrédité sur la carte)')) return;
+  u.splice(i,1); c.usages=u; saveCarte(c).then(function(){toast('Cours annulé');});
+}
+function changeUsageDate(id,i,d){
+  var c=cartes[id]; if(!c||!d) return;
+  var u=usages(c); if(!u[i]) return;
+  u[i].date=d; c.usages=u; saveCarte(c).then(function(){toast('Date modifiée : '+frDate(d));});
+}
+function undoLast(id){
+  var c=cartes[id]; if(!c) return;
+  var u=usages(c); if(!u.length) return;
+  // le dernier cours pointé (le plus récent enregistré ; à défaut, la date la plus tardive)
+  var k=0; u.forEach(function(x,i){ var a=x.ts||0, b=u[k].ts||0; if(a>b||(a===b&&(x.date||'')>=(u[k].date||''))) k=i; });
+  if(!confirm('Dépointer le cours du '+frDate(u[k].date)+' pour '+c.prenom+' ? (il sera recrédité sur la carte)')) return;
+  u.splice(k,1); c.usages=u; saveCarte(c).then(function(){toast('↶ Cours recrédité — '+restants(c)+' restant'+(restants(c)>1?'s':''));});
+}
+function renew(id){
+  var c=cartes[id]; if(!c) return;
+  openModal(null,{prenom:c.prenom,nom:c.nom,email:c.email,tel:c.tel,studio:c.studio,paiement:c.paiement});
+}
+
+/* ─── Formulaire nouvelle carte / modification ─── */
+var editingId=null;
+function openModal(id,prefill){
+  editingId=id||null;
+  var c=id?cartes[id]:Object.assign({studio:'La Bulle',total:10,dateAchat:todayISO(),paye:true},prefill||{});
+  if(!id){ var st=STUDIOS[c.studio]||{}; c.montant=st.prix; c.validite=st.moisValidite?addMonthsISO(c.dateAchat,st.moisValidite):''; }
+  var studioOpts=Object.keys(STUDIOS).map(function(s){return '<option'+(s===c.studio?' selected':'')+'>'+s+'</option>';}).join('');
+  var payOpts=['','Espèces','Virement','Carte bancaire','Chèque','Lien de paiement en ligne'].map(function(p){return '<option'+(p===(c.paiement||'')?' selected':'')+' value="'+p+'">'+(p||'—')+'</option>';}).join('');
+  document.getElementById('card-modal-content').innerHTML=
+     '<h3>'+(id?'Modifier la carte':'Nouvelle carte')+'</h3>'
+    +'<div class="row"><div class="fg"><label>Prénom *</label><input id="f-prenom" value="'+_esc(c.prenom)+'"/></div>'
+    +'<div class="fg"><label>Nom</label><input id="f-nom" value="'+_esc(c.nom)+'"/></div></div>'
+    +'<div class="fg"><label>E-mail <span style="opacity:.6">(sert à la reconnaître dans les inscriptions)</span></label><input type="email" id="f-email" value="'+_esc(c.email)+'"/></div>'
+    +'<div class="fg"><label>Téléphone</label><input type="tel" id="f-tel" value="'+_esc(c.tel)+'"/></div>'
+    +'<div class="row"><div class="fg"><label>Studio</label><select id="f-studio"'+(id?'':' onchange="studioChanged()"')+'>'+studioOpts+'</select></div>'
+    +'<div class="fg"><label>Nombre de cours</label><input type="number" id="f-total" min="1" max="50" value="'+_esc(c.total||10)+'"/></div></div>'
+    +'<div class="row"><div class="fg"><label>Date d’achat</label><input type="date" id="f-achat" value="'+_esc(c.dateAchat)+'"'+(id?'':' onchange="studioChanged()"')+'/></div>'
+    +'<div class="fg"><label>Valable jusqu’au <span style="opacity:.6">(vide = sans limite)</span></label><input type="date" id="f-validite" value="'+_esc(c.validite)+'"/></div></div>'
+    +'<div class="row"><div class="fg"><label>Montant (€)</label><input type="number" id="f-montant" min="0" step="0.5" value="'+_esc(c.montant)+'"/></div>'
+    +'<div class="fg"><label>Paiement</label><select id="f-paiement">'+payOpts+'</select></div></div>'
+    +'<div class="fg" style="display:flex;gap:.5rem;align-items:center"><input type="checkbox" id="f-paye" style="width:18px;height:18px;accent-color:var(--burgundy)"'+(c.paye!==false?' checked':'')+'/><label for="f-paye" style="margin:0;opacity:1;font-size:.88rem">Carte payée</label></div>'
+    +'<div class="fg"><label>Note</label><textarea id="f-note" rows="2">'+_esc(c.note)+'</textarea></div>'
+    +'<div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-top:1rem">'
+    +'<button class="btn" onclick="saveModal()">Enregistrer</button>'
+    +'<button class="btn ghost" onclick="closeModal()">Annuler</button>'
+    +(id?'<span style="flex:1"></span>'
+      +'<button class="linkbtn" onclick="toggleArchive()">'+(c.archivee?'Réactiver':'Archiver')+'</button>'
+      +'<button class="linkbtn" onclick="deleteCarte()">Supprimer</button>':'')
+    +'</div>';
+  document.getElementById('card-modal').classList.add('active');
+}
+function studioChanged(){
+  var st=STUDIOS[document.getElementById('f-studio').value]||{};
+  var achat=document.getElementById('f-achat').value||todayISO();
+  document.getElementById('f-montant').value=st.prix;
+  document.getElementById('f-validite').value=st.moisValidite?addMonthsISO(achat,st.moisValidite):'';
+}
+function closeModal(){document.getElementById('card-modal').classList.remove('active');editingId=null;}
+function val(id){return document.getElementById(id).value.trim();}
+function saveModal(){
+  if(!val('f-prenom')){alert('Indique au moins le prénom.');return;}
+  var c=editingId?cartes[editingId]:{id:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),usages:[]};
+  c.prenom=val('f-prenom'); c.nom=val('f-nom'); c.email=val('f-email'); c.tel=val('f-tel');
+  c.studio=val('f-studio'); c.total=Math.max(1,parseInt(val('f-total'),10)||10);
+  c.dateAchat=val('f-achat')||todayISO(); c.validite=val('f-validite');
+  c.montant=val('f-montant'); c.paiement=val('f-paiement'); c.paye=document.getElementById('f-paye').checked;
+  c.note=val('f-note');
+  saveCarte(c).then(function(){toast(editingId?'Carte mise à jour':'✓ Carte créée pour '+c.prenom);closeModal();});
+}
+function toggleArchive(){
+  var c=cartes[editingId]; if(!c) return;
+  c.archivee=!c.archivee; saveCarte(c).then(function(){toast(c.archivee?'Carte archivée':'Carte réactivée');closeModal();});
+}
+function deleteCarte(){
+  var c=cartes[editingId]; if(!c) return;
+  if(!confirm('Supprimer définitivement la carte de '+c.prenom+' '+(c.nom||'')+' ? (préfère « Archiver » pour garder l’historique)')) return;
+  cartesRef.child(c.id).remove().then(function(){toast('Carte supprimée');closeModal();});
+}
+
+/* ─── Export CSV ─── */
+function _csv(v){v=String(v==null?'':v);return /[",;\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}
+function exportCSV(){
+  var rows=[['Prénom','Nom','Email','Téléphone','Studio','Achat','Validité','Cours','Utilisés','Restants','Montant','Paiement','Payée','Statut','Dates des cours','Note']];
+  Object.values(cartes).forEach(function(c){
+    if(!c||!c.id) return;
+    var u=usages(c);
+    rows.push([c.prenom,c.nom,c.email,c.tel,c.studio,c.dateAchat,c.validite,c.total,u.length,restants(c),c.montant,c.paiement,c.paye===false?'non':'oui',
+      c.archivee?'archivée':restants(c)<=0?'terminée':isExpired(c)?'expirée':'en cours',
+      u.map(function(x){return x.date;}).join(' '),c.note]);
+  });
+  var blob=new Blob(['﻿'+rows.map(function(r){return r.map(_csv).join(';');}).join('\r\n')],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='cartes-aliyoga-'+todayISO()+'.csv'; a.click();
+}
+</script>
+</body>
+</html>

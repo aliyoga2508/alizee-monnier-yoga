@@ -719,7 +719,8 @@ function renderAdminPanel(panel) {
   if(!hasClients) clientsHTML='<p style="font-size:.85rem;opacity:.6">Aucune inscription pour le moment.</p>';
 
   panel.innerHTML='<button class="modal-close" onclick="closeAdminDirect();logoutAdmin();" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#383837;opacity:.5">&#215;</button>'
-    +'<h2 style="font-size:1.6rem;font-weight:300;font-style:italic;color:var(--burgundy);margin-bottom:1.5rem">🌿 Espace admin</h2>'
+    +'<h2 style="font-size:1.6rem;font-weight:300;font-style:italic;color:var(--burgundy);margin-bottom:1rem">🌿 Espace admin</h2>'
+    +'<a href="cartes.html" class="btn-primary" style="display:block;text-align:center;text-decoration:none;margin-bottom:1.5rem;background:var(--green)">🎟️ Cartes 10 cours des élèves</a>'
     +'<div class="admin-section">'
     +'<h4>Ajouter une session</h4>'
     +'<div class="form-row">'
