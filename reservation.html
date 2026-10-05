@@ -262,14 +262,14 @@ footer a{color:var(--cream);text-decoration:none;border-bottom:1px solid rgba(23
 
 <footer>
   <p>Alizée Monnier &mdash; Professeure de Yoga</p>
-  <p style="margin-top:.5rem;opacity:.6;font-size:.8rem">Contact : <a id="contact-link" href="#">aliyoga2508&#64;gmail.com</a></p>
+  <p style="margin-top:.5rem;opacity:.6;font-size:.8rem">Contact : <a id="contact-link" href="#">aliyoga.om&#64;gmail.com</a></p>
   <p style="margin-top:.4rem;opacity:.6;font-size:.8rem"><a href="confidentialite.html" style="color:inherit;text-decoration:underline">Mentions légales &amp; confidentialité</a></p>
 </footer>
 
 <script>
 
 const CONFIG = {
-  ownerEmail: 'aliyoga2508@gmail.com',
+  ownerEmail: 'aliyoga.om@gmail.com',
   emailjsPublicKey: 'iiD6Oq4uKVfep4ig5',
   emailjsServiceId: 'service_Alizeeyoga',
   emailjsTemplateClient: 'template_confclient',
@@ -552,7 +552,7 @@ function openBooking(id) {
   if(isFull){
     html+='<div class="full-badge">🙏 Cette session est complète</div>';
   } else if(isBookingClosed(s)){
-    html+='<div class="full-badge" style="line-height:1.6">⏳ Les inscriptions en ligne ferment 1 h avant le début du cours.<br/>Contacte-moi pour savoir s\'il reste une place&nbsp;:<br/><a href="tel:+33767957668" style="color:inherit;font-weight:600">📞 07 67 95 76 68</a> &nbsp;·&nbsp; <a href="mailto:aliyoga2508@gmail.com" style="color:inherit;font-weight:600">✉️ aliyoga2508@gmail.com</a></div>';
+    html+='<div class="full-badge" style="line-height:1.6">⏳ Les inscriptions en ligne ferment 1 h avant le début du cours.<br/>Contacte-moi pour savoir s\'il reste une place&nbsp;:<br/><a href="tel:+33767957668" style="color:inherit;font-weight:600">📞 07 67 95 76 68</a> &nbsp;·&nbsp; <a href="mailto:aliyoga.om@gmail.com" style="color:inherit;font-weight:600">✉️ aliyoga.om@gmail.com</a></div>';
   } else {
     html+='<div class="form-row"><div class="form-group"><label>Prénom *</label><input type="text" id="f-prenom" placeholder="Marie"/></div><div class="form-group"><label>Nom *</label><input type="text" id="f-nom" placeholder="Dupont"/></div></div>';
     html+='<div class="form-group"><label>Adresse e-mail *</label><input type="email" id="f-email" placeholder="marie@exemple.fr"/></div>';
@@ -1035,7 +1035,7 @@ auth.onAuthStateChanged(function(user){
   var ov=document.getElementById('admin-overlay');
   if(ov && ov.classList.contains('active')) renderAdminContent();
 });
-(function(){var a=document.getElementById('contact-link');if(a){a.href='mailto:aliyoga2508@gmail.com';}})();
+(function(){var a=document.getElementById('contact-link');if(a){a.href='mailto:aliyoga.om@gmail.com';}})();
 </script>
 </body>
 </html>

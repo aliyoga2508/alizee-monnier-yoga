@@ -59,7 +59,7 @@
         } else { throw new Error('refus'); }
       })
       .catch(function(){
-        say('Oups, l\'inscription n\'a pas fonctionné. Réessaie dans un instant, ou écris-moi à aliyoga2508@gmail.com.', false);
+        say('Oups, l\'inscription n\'a pas fonctionné. Réessaie dans un instant, ou écris-moi à aliyoga.om@gmail.com.', false);
       })
       .then(function(){ btn.disabled = false; btn.textContent = 'Je m\'inscris'; });
   });

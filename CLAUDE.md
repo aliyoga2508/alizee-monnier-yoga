@@ -14,7 +14,7 @@
 - **Vitrine** : `Website/site-vitrine/index.html` (présentation, 4 pratiques, prix libre). Section témoignages **active** (4 avis réels recueillis par formulaire, accord de publication).
 - **Réservation** : `reservation.html` = calendrier maison (Google Forms → Google Sheets → Apps Script → Notion ; base "Planning des séances", intégration "Form counter"). Notice : `Website/notice-seances-yoga.md`.
 - **Charte** : crème `#ebe1d0` · bordeaux `#8f4333` · vert `#687257` · gris `#383837` · police **Fraunces**. Logo éléphant au cœur (`BRAND ASSETS/alizee_logo_2a.png` bordeaux, `_3a.png` vert).
-- Contact : **aliyoga2508@gmail.com** · 07 67 95 76 68.
+- Contact public : **aliyoga.om@gmail.com** · 07 67 95 76 68 (depuis le 5/10/2026). L'ancienne `aliyoga2508@gmail.com` transfère vers elle et reste l'identifiant des comptes Firebase (règles verrouillées dessus), GitHub, Brevo, EmailJS…
 
 ## Déploiement (workflow Git propre — fini le drag-and-drop)
 - Le dépôt = source de vérité. Éditer → `commit` → `push` → mise en ligne automatique.
