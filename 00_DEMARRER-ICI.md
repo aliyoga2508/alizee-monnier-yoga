@@ -72,7 +72,7 @@ Je suis ton **assistant IA** (Claude), installé dans ce dossier qui est **enti�
 
 - **Marque :** Aliyoga — *Alizée Monnier, Yoga Traditionnel, Annecy*
 - **Site :** https://aliyoga.fr (et aliyoga.ch en redirection)
-- **Email :** aliyoga2508@gmail.com · **Tél :** 07 67 95 76 68
+- **Email :** aliyoga.om@gmail.com · **Tél :** 07 67 95 76 68
 - **Hébergement site :** GitHub (gratuit) · **Domaines :** Infomaniak
 - **Réservations :** ta page de reservation
 - **Formation :** Sadhana Life Center
