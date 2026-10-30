@@ -271,3 +271,9 @@ footer .legal a{color:var(--cream)}
 .nl-msg.ok{font-size:1.1rem;font-style:italic}
 .nl-msg.err{color:#fff;font-weight:500}
 @media(max-width:560px){.nl-fields{flex-direction:column}.nl-fields .btn{width:100%}}
+
+/* ── Article : figure flottante (image + texte à côté) ── */
+.article figure.figure-side{float:right;width:42%;max-width:300px;margin:.4rem 0 1.2rem 1.8rem}
+.article figure.figure-side img{border-radius:14px}
+.article h2{clear:both}
+@media(max-width:620px){.article figure.figure-side{float:none;width:100%;max-width:300px;margin:1.6rem auto}}
